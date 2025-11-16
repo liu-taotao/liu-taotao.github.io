@@ -25,3 +25,22 @@ fetch(docPath)
         document.getElementById('markdown-content').innerHTML = 
             `<h2>错误</h2><p>无法加载文档: ${error.message}</p><p>请确认文件是否存在: ${docPath}</p>`;
     });
+    
+// DOM Elements
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu = document.querySelector('.nav-menu');
+const navLinks = document.querySelectorAll('.nav-link');
+
+// Mobile Navigation Toggle
+navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    navToggle.classList.toggle('active');
+});
+
+// Close mobile menu when clicking on a link
+navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        navToggle.classList.remove('active');
+    });
+});

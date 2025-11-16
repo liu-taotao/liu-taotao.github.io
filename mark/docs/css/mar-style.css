@@ -110,31 +110,53 @@ body {
     background-color: #2980b9;
 }
 
-/* 导航栏样式 */
-.navbar {
-    /* 这里添加导航栏样式 */
-}
-
-.nav-container {
-    /* 这里添加容器样式 */
-}
-
-.nav-logo a {
-    /* 这里添加logo链接样式 */
-}
-
-.nav-menu {
-    /* 这里添加菜单样式 */
-}
-
-.nav-item {
-    /* 这里添加菜单项样式 */
-}
-
-.nav-link {
-    /* 这里添加链接样式 */
-}
-
 .nav-toggle {
-    /* 这里添加切换按钮样式 */
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.bar {
+    width: 25px;
+    height: 3px;
+    background: var(--primary-color);
+    margin: 3px 0;
+    transition: var(--transition);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        flex-direction: column;
+        background-color: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        width: 100%;
+        text-align: center;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        padding: 2rem 0;
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
 }
