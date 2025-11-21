@@ -1098,3 +1098,26 @@ section {
 .pub-title a:hover {
     color: #007bff; /* 悬停时的颜色，可以根据需要调整 */
 }
+
+/* 添加到style.css中的样式 */
+.dino-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.jumping-dino {
+    font-size: 2rem;
+    animation: jump 1s infinite;
+    transform-origin: bottom;
+}
+
+@keyframes jump {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
