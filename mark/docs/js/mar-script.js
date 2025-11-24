@@ -44,3 +44,42 @@ navLinks.forEach(link => {
         navToggle.classList.remove('active');
     });
 });
+
+// 金色五角星下落效果
+document.addEventListener('DOMContentLoaded', function() {
+    const starsContainer = document.getElementById('stars-container');
+    
+    function createStar() {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        
+        // 创建五角星字符
+        star.innerHTML = '★';
+        
+        // 随机大小 (10-20px)
+        const size = Math.random() * 10 + 10;
+        star.style.fontSize = `${size}px`;
+        
+        // 随机位置
+        star.style.left = `${Math.random() * 100}%`;
+        
+        // 随机透明度
+        star.style.opacity = Math.random() * 0.7 + 0.3;
+        
+        // 随机动画时长 (3-6秒)
+        const duration = Math.random() * 3 + 3;
+        star.style.animationDuration = `${duration}s`;
+        
+        starsContainer.appendChild(star);
+        
+        // 动画结束后移除星星
+        setTimeout(() => {
+            if (star.parentNode) {
+                star.parentNode.removeChild(star);
+            }
+        }, duration * 1000);
+    }
+    
+    // 定期创建星星 (每300毫秒创建一个)
+    setInterval(createStar, 300);
+});
