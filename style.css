@@ -309,7 +309,7 @@ section {
 }
 
 .internship-notice {
-    background: var(--bg-light);
+    background: rgba(255, 255, 255, 0.5); /* 将透明度设置为 0.5 */
     color: var(--text-color);
     padding: 2rem;
     border-radius: 8px;
@@ -402,7 +402,7 @@ section {
     grid-template-columns: 70px 1fr;
     gap: 1.5rem;
     padding: 1.2rem;
-    background: white;
+    background: rgba(255, 255, 255, 0.5); /* 将透明度设置为 0.5 */
     margin-bottom: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
@@ -508,7 +508,7 @@ section {
 
 
 .research-interest-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.5); /* 将透明度设置为 0.5 */
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
@@ -529,7 +529,7 @@ section {
 
 .research-interest-card.active {
     border-color: var(--accent-color);
-    background: var(--bg-light);
+    background: rgba(255, 255, 255, 0.5); /* 将透明度设置为 0.5 */
     box-shadow: var(--shadow-hover);
 }
 
@@ -654,7 +654,7 @@ section {
 }
 
 .publication-item {
-    background: var(--bg-light);
+    background: rgba(255, 255, 255, 0.5); /* 将透明度设置为 0.5 */
     padding: 1.5rem;
     border-radius: 10px;
     border-left: 4px solid var(--secondary-color);

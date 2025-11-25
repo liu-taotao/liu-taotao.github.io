@@ -276,3 +276,10 @@ body {
     height: 100%;
     object-fit: cover;
 }
+#markdown-content {
+    background: rgba(255, 255, 255, 0.856); /* 半透明白色背景 */
+    color: var(--text-color); /* 确保文字颜色清晰可见 */
+    padding: 2rem; /* 可选：增加内边距以提升可读性 */
+    border-radius: 8px; /* 可选：圆角效果 */
+    box-shadow: var(--shadow); /* 可选：阴影效果 */
+}
