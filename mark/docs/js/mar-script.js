@@ -83,3 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 定期创建星星 (每300毫秒创建一个)
     setInterval(createStar, 300);
 });
+
+// 返回按钮功能
+document.querySelector('.back-to-left').addEventListener('click', function() {
+    window.location.href = '../index.html#research'; // 跳转到 index.html 的 Life & Bliss 部分
+});
