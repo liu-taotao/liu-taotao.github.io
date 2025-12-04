@@ -88,3 +88,61 @@ document.addEventListener('DOMContentLoaded', function() {
 document.querySelector('.back-to-left').addEventListener('click', function() {
     window.location.href = '../index.html#research'; // 跳转到 index.html 的 Life & Bliss 部分
 });
+// 初始化 Valine
+document.addEventListener('DOMContentLoaded', function () {
+    // 获取当前加载的文档路径
+    const docFile = getUrlParameter('doc') || 'vilasr.md';
+    const docPath = `./docs/story/${docFile}`;
+
+    // 初始化 Valine
+    new Valine({
+        el: '#valine', // 指定留言容器
+        appId: 'a1y0WgrUeaPJfMKW0PYTsInm-gzGzoHsz', 
+        appKey: 'xmlWz9A1uOYxyaf9NJf5iGOK', 
+        avatar: 'retrod', 
+        lang: 'zh-cn', // 语言设置
+        placeholder: '你的评论 ...', // 输入框占位符
+        pageSize: 10, // 每页显示的评论数量
+        visitor: true, // 是否启用访问量统计
+        recordIP: true, // 是否记录用户 IP
+        highlight: true, // 是否启用代码高亮
+        emojiCDN: 'https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/', // 表情 CDN 地址
+        emojiMaps: { /* 表情映射 */ },
+        path: docPath // 动态设置留言路径，确保每个 Markdown 文件有独立的留言区
+    });
+});
+
+// 文档列表
+const docsList = [
+    'vilasr.md',
+    'begin.md',
+    'fun.md',
+    'heart.md',
+    'vilasr.md',
+    'thought.md',
+    'mind.md',
+    'pm.md',
+    'self.md',
+    'vacalith.md'
+];
+// 获取当前文档索引
+const currentDocIndex = docsList.indexOf(docFile);
+// 上一篇按钮
+document.getElementById('prev-doc').addEventListener('click', () => {
+    if (currentDocIndex > 0) {
+        const prevDoc = docsList[currentDocIndex - 1];
+        window.location.href = `?doc=${prevDoc}`;
+    } else {
+        alert('已经是第一篇文档！');
+    }
+});
+
+// 下一篇按钮
+document.getElementById('next-doc').addEventListener('click', () => {
+    if (currentDocIndex < docsList.length - 1) {
+        const nextDoc = docsList[currentDocIndex + 1];
+        window.location.href = `?doc=${nextDoc}`;
+    } else {
+        alert('已经是最后一篇文档！');
+    }
+});

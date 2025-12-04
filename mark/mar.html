@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./docs/jpg/image.png" type="image/png">
-    <title>Tao Liu😜 刘 涛💡</title>
+    <!-- <link rel="icon" href="./docs/jpg/image.png" type="image/png"> -->
+    <title>Tao Liu 刘 涛😜</title>
     <link rel="stylesheet" href="../style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="./docs/css/mar-style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- 引入 Valine 样式 -->
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://bohonghuang.github.io/lib/valine/valine.min.css">
+    <noscript><link rel="stylesheet" href="https://bohonghuang.github.io/lib/valine/valine.min.css"></noscript>
+
+    <!-- 引入 Valine 脚本 -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.16/dist/Valine.min.js"></script>
 </head>
 <body>
     <!-- 背景 -->
@@ -31,14 +38,19 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="../index.html#home" class="nav-link">Home🛸</a>
+                    <a href="../index.html#home" class="nav-link">@This is me</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../index.html#Record" class="nav-link">Record🧩</a>
+                    <a href="../index.html#Record" class="nav-link">@My time and life🚤</a>
                 </li>
                 <li class="nav-item">
+                    <a href="https://github.com/liu-taotao" class="nav-link"  title="GitHub" rel="noopener noreferrer" target="_blank">
+                        <i class='fab fa-github fa-fw'></i>
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
                     <a href="../index.html#research" class="nav-link">Research & Publications🚤</a>
-                </li>
+                </li> -->
             </ul>
             <div class="nav-toggle">
                 <span class="bar"></span>
@@ -48,11 +60,26 @@
         </div>
     </nav>
 
-   <!-- Main Content Area -->
+    <!-- Main Content Area -->
     <div class="container">
         <div id="markdown-content" class="markdown-content">
             <p>His name is Liu Tao, a shy boy...</p>
         </div>
+
+        <!-- 新增按钮容器 -->
+        <div class="navigation-buttons">
+            <button id="prev-doc" class="nav-button">Prev</button>
+            <button id="next-doc" class="nav-button">Next</button>
+        </div>
+
+        <!-- 新增分隔线 -->
+        <div class="divider"></div>
+
+        <!-- Valine 留言容器 -->
+        <div id="valine" class="comment"></div>
+        <noscript>
+            Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+        </noscript>
     </div>
             
     <!-- 返回按钮 -->

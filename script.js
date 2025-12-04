@@ -22,9 +22,15 @@ navLinks.forEach(link => {
 // Smooth scrolling for navigation links
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
+        const href = link.getAttribute('href');
+        
+        // 检查是否为外部链接
+        if (href.startsWith('http') || href.startsWith('https')) {
+            return; // 不阻止外部链接的默认行为
+        }
+
+        e.preventDefault(); // 阻止内部锚点链接的默认行为
+        const targetSection = document.querySelector(href);
         
         if (targetSection) {
             const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar

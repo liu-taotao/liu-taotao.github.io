@@ -268,7 +268,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    opacity: 0.3; /* 调整这个值来控制GIF的可见度 */
+    opacity: 0.5; /* 调整这个值来控制GIF的可见度 */
 }
 
 .background-gif {
@@ -282,4 +282,49 @@ body {
     padding: 2rem; /* 可选：增加内边距以提升可读性 */
     border-radius: 8px; /* 可选：圆角效果 */
     box-shadow: var(--shadow); /* 可选：阴影效果 */
+}
+/* 按钮容器样式 */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between; /* 左右分布 */
+    margin-top: 20px; /* 距离上方内容的间距 */
+}
+
+/* 按钮通用样式 */
+.nav-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #3498db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* 鼠标悬停效果 */
+.nav-button:hover {
+    background-color: #2980b9;
+}
+/* 按钮通用样式 */
+.nav-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #5a565631; /* 修改为深灰色 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* 鼠标悬停效果 */
+.nav-button:hover {
+    background-color: #a34d78; /* 修改为更深的灰色 */
+}
+/* 分隔线样式 */
+.divider {
+    height: 1px; /* 横线高度 */
+    background-color: rgba(255, 255, 255, 0.5); /* 白色透明背景 */
+    margin: 20px 0; /* 上下间距 */
 }
