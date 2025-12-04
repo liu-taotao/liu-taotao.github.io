@@ -19,7 +19,7 @@
 上学时，总是十分想要去一个很大地方，然后努力向前，把所有的时间都用在上面，最后也确实换到了这样的结果。但是真正让我铭记的还是这个过程，真的付出了很多，其中的点点滴滴也只有自己知道，结果相对也很重要，会一直想着结果，享受这样的一个过程。很难想象，总是在遇到很多的人，但是又不知道遇到的到底是不是人，这样的感觉的真的很不好，有很多真的很奇怪，我也觉得很奇怪。
 
 <audio controls>
-  <source src="./docs/music/wave.mp3" type="audio/mpeg">
+  <source src="./docs/music/Beach House - Space Song.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
 
