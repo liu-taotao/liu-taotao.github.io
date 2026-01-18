@@ -1207,3 +1207,22 @@ section {
     margin-bottom: 0.5rem;
     line-height: 1.4;
 }
+#bouncing-balls-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* 不干扰页面交互 */
+    z-index: -1;
+}
+
+.bouncing-ball {
+    position: absolute; /* 必须！否则 transform 基准点不对 */
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    /* 关键：启用硬件加速 */
+    will-change: transform;
+    }

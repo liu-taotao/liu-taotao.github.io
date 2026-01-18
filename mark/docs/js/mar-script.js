@@ -146,3 +146,102 @@ document.getElementById('next-doc').addEventListener('click', () => {
         alert('已经是最后一篇文档！');
     }
 });
+
+// 图片列表（请根据实际文件名修改）
+const imageSources = [
+  './docs/jpg/index.jpg',
+  './docs/jpg/kaka.jpg',
+  './docs/jpg/tree.png',
+  './docs/jpg/thisme.jpg',
+  './docs/jpg/body.png',
+  './docs/jpg/maybe.png',
+  './docs/jpg/ted.jpg',
+  './docs/jpg/paintwo.png',
+  './docs/jpg/subway.png',
+  './docs/jpg/红鞋.jpg',
+  './docs/jpg/茶杯头.webp',
+  './docs/jpg/sub.jpg',
+  './docs/jpg/city.png',
+  './docs/jpg/painone.png',
+  './docs/jpg/杯子.jpg',
+  './docs/jpg/ball.jpg',
+  './docs/jpg/lanch.jpg',
+  './docs/jpg/face.jpg',
+  './docs/jpg/cha.jpg',
+];
+
+// 创建球的数量
+const ballCount = imageSources.length;
+
+// 获取容器
+const container = document.getElementById('bouncing-balls-container');
+const balls = [];
+
+// 初始化每个球
+for (let i = 0; i < ballCount; i++) {
+  const ball = document.createElement('div');
+  ball.className = 'bouncing-ball';
+  ball.style.backgroundImage = `url(${imageSources[i]})`;
+  
+  // 随机大小（40px ~ 100px）
+  const size = Math.random() * 60 + 40;
+  ball.style.width = `${size}px`;
+  ball.style.height = `${size}px`;
+
+  // 初始位置
+  const x = Math.random() * (window.innerWidth - size);
+  const y = Math.random() * (window.innerHeight - size);
+//   ball.style.left = `${x}px`;
+//   ball.style.top = `${y}px`;
+
+  // 随机速度
+  const vx = (Math.random() - 0.5) * 4;
+  const vy = (Math.random() - 0.5) * 4;
+
+  container.appendChild(ball);
+  balls.push({
+    element: ball,
+    x: x,
+    y: y,
+    vx: vx,
+    vy: vy,
+    size: size
+  });
+}
+
+// 动画循环
+function animate() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  balls.forEach(ball => {
+    // 更新位置
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // 边界反弹
+    if (ball.x <= 0 || ball.x + ball.size >= w) {
+      ball.vx = -ball.vx;
+      ball.x = Math.max(0, Math.min(w - ball.size, ball.x));
+    }
+    if (ball.y <= 0 || ball.y + ball.size >= h) {
+      ball.vy = -ball.vy;
+      ball.y = Math.max(0, Math.min(h - ball.size, ball.y));
+    }
+
+    // 应用位置
+    // ball.element.style.left = `${ball.x}px`;
+    // ball.element.style.top = `${ball.y}px`;
+    ball.element.style.transform = `translate(${ball.x}px, ${ball.y}px)`;
+  });
+
+  requestAnimationFrame(animate);
+}
+
+// 启动动画
+animate();
+
+// 响应窗口大小变化
+window.addEventListener('resize', () => {
+  // 可选：重置位置或重新计算边界
+});
