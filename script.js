@@ -444,37 +444,63 @@ function createPreloader() {
 // Uncomment to enable preloader
 // createPreloader(); 
 
-// 金色五角星下落效果
+// 增强版流星群：一大带多小
 document.addEventListener('DOMContentLoaded', function() {
-    const starsContainer = document.getElementById('stars-container');
-
-    function createStar() {
-        const star = document.createElement('div');
-        star.classList.add('meteor'); // 改为 meteor 类
-
-        // 随机位置（X 轴）
-        const left = Math.random() * 100;
-        star.style.left = `${left}%`;
-
-        // 随机动画时长 (1-3秒 更符合流星)
-        const duration = Math.random() * 2 + 1;
-        star.style.animationDuration = `${duration}s`;
-
-        // 随机延迟（可选，让流星错开）
-        star.style.animationDelay = `${Math.random() * 2}s`;
-
-        starsContainer.appendChild(star);
-
-        // 动画结束后移除
-        setTimeout(() => {
-            if (star.parentNode) {
-                star.parentNode.removeChild(star);
-            }
-        }, duration * 1000);
+    // 创建容器（如果不存在）
+    let meteorsContainer = document.getElementById('meteors-container');
+    if (!meteorsContainer) {
+        meteorsContainer = document.createElement('div');
+        meteorsContainer.id = 'meteors-container';
+        meteorsContainer.className = 'meteors-container';
+        document.body.appendChild(meteorsContainer);
     }
-    
-    // 定期创建星星 (每300毫秒创建一个)
-    setInterval(createStar, 300);
+
+    function createMeteorGroup() {
+        const group = document.createElement('div');
+        group.style.position = 'absolute';
+        group.style.top = '0';
+        group.style.left = '0';
+        group.style.width = '100%';
+        group.style.height = '100%';
+
+        // 随机水平起始偏移（控制从哪一列飞过）
+        const startX = Math.random() * 100; // %
+
+        // 创建主流星
+        const main = document.createElement('div');
+        main.className = 'meteor main';
+        main.style.left = `${startX}%`;
+        group.appendChild(main);
+
+        const baseOffsets = Array.from({ length: 30 }, (_, i) => (i - 14.5)); // -14.5 ~ 14.5
+        const offsets = baseOffsets
+        .filter(x => Math.abs(x) > 0.5) // 排除接近 0 的
+        .map(x => Math.round(x + (Math.random() - 0.5) * 2)); // 加 ±1 随机抖动
+        offsets.forEach((offset) => {
+            const small = document.createElement('div');
+            small.className = 'meteor small'; // ← 不再用 small-1, small-2...
+            
+            // 随机动画时长 (8~11秒) 和延迟 (0~0.8秒)
+            const duration = 8 + Math.random() * 3;
+            const delay = Math.random() * 0.8;
+            small.style.animationDuration = `${duration}s`;
+            small.style.animationDelay = `${delay}s`;
+            
+            small.style.left = `${Math.max(0, Math.min(100, startX + offset))}%`;
+            group.appendChild(small);
+        });
+        meteorsContainer.appendChild(group);
+
+        // 清理：动画结束后移除整个组（按最长动画 11s）
+        setTimeout(() => {
+            if (group.parentNode) {
+                group.parentNode.removeChild(group);
+            }
+        }, 11000);
+    }
+
+    // 每 8 秒生成一组（避免太密集）
+    setInterval(createMeteorGroup, 800);
 });
 
 // 图片列表（请根据实际文件名修改）

@@ -1123,36 +1123,82 @@ section {
         transform: translateY(-20px);
     }
 }
-/* 流星（Meteor）样式 */
+/* 流星容器（用于定位） */
+.meteors-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10000;
+}
+
+/* 公共流星样式 */
 .meteor {
     position: absolute;
     top: -20px;
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
     background: #fff;
     border-radius: 50%;
-    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8),
-                0 0 20px 4px rgba(255, 215, 0, 0.6); /* 金色辉光 */
+    box-shadow: 
+        0 0 10px 2px rgba(255, 255, 255, 0.8),
+        0 0 20px 4px rgba(255, 215, 0, 0.6);
     animation: meteorFall linear forwards;
 }
 
+/* 主流星：更大、更亮 */
+.meteor.main {
+    width: 13px;
+    height: 13px;
+    box-shadow: 
+        0 0 20px 6px rgba(255, 255, 255, 0.9),
+        0 0 40px 10px rgba(255, 215, 0, 0.8);
+    animation-duration: 10s;
+}
+
+/* 小流星：稍小，延迟出现 */
+/* .meteor.small-1 { animation-duration: 9.5s; animation-delay: 0.2s; }
+.meteor.small-2 { animation-duration: 10s; animation-delay: 0.4s; }
+.meteor.small-3 { animation-duration: 10.5s; animation-delay: 0.6s; }
+.meteor.small-4 { animation-duration: 9.8s; animation-delay: 0.3s; } */
+/* 所有小流星共用 */
+.meteor.small {
+    width: 5px;
+    height: 5px;
+    box-shadow: 
+        0 0 8px 2px rgba(255, 255, 255, 0.7),
+        0 0 16px 3px rgba(255, 215, 0, 0.5);
+    animation: meteorFall linear forwards;
+}
+/* 拖尾效果（所有流星共用） */
 .meteor::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100px;
-    height: 2px;
+    top: 30%;
+    left: 30%;
+    width: 120px; /* 主流星拖尾更长 */
+    height: 3px;
     background: linear-gradient(to right, rgba(255,255,255,0.9), transparent);
-    transform: rotate(-30deg); /* 👈 关键修改：-30deg */
+    transform: rotate(-30deg);
     transform-origin: left center;
 }
+
+/* 主流星拖尾更长 */
+.meteor.main::before {
+    width: 200px;
+    height: 4px;
+}
+
+/* 动画：从右上飞向左下 */
 @keyframes meteorFall {
     0% {
-        transform: translateY(0) translateX(100vw); /* 从右侧开始 */
+        transform: translateX(100vw) translateY(0);
+        opacity: 1;
     }
     100% {
-        transform: translateY(100vh) translateX(-200px); /* 飞向左下 */
+        transform: translateX(-200px) translateY(100vh);
         opacity: 0;
     }
 }
