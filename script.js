@@ -447,31 +447,25 @@ function createPreloader() {
 // 金色五角星下落效果
 document.addEventListener('DOMContentLoaded', function() {
     const starsContainer = document.getElementById('stars-container');
-    
+
     function createStar() {
         const star = document.createElement('div');
-        star.classList.add('star');
-        
-        // 创建五角星字符
-        star.innerHTML = '★';
-        
-        // 随机大小 (10-20px)
-        const size = Math.random() * 10 + 10;
-        star.style.fontSize = `${size}px`;
-        
-        // 随机位置
-        star.style.left = `${Math.random() * 100}%`;
-        
-        // 随机透明度
-        star.style.opacity = Math.random() * 0.7 + 0.3;
-        
-        // 随机动画时长 (3-6秒)
-        const duration = Math.random() * 3 + 3;
+        star.classList.add('meteor'); // 改为 meteor 类
+
+        // 随机位置（X 轴）
+        const left = Math.random() * 100;
+        star.style.left = `${left}%`;
+
+        // 随机动画时长 (1-3秒 更符合流星)
+        const duration = Math.random() * 2 + 1;
         star.style.animationDuration = `${duration}s`;
-        
+
+        // 随机延迟（可选，让流星错开）
+        star.style.animationDelay = `${Math.random() * 2}s`;
+
         starsContainer.appendChild(star);
-        
-        // 动画结束后移除星星
+
+        // 动画结束后移除
         setTimeout(() => {
             if (star.parentNode) {
                 star.parentNode.removeChild(star);

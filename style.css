@@ -1123,6 +1123,39 @@ section {
         transform: translateY(-20px);
     }
 }
+/* 流星（Meteor）样式 */
+.meteor {
+    position: absolute;
+    top: -20px;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8),
+                0 0 20px 4px rgba(255, 215, 0, 0.6); /* 金色辉光 */
+    animation: meteorFall linear forwards;
+}
+
+.meteor::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(to right, rgba(255,255,255,0.9), transparent);
+    transform: rotate(-30deg); /* 👈 关键修改：-30deg */
+    transform-origin: left center;
+}
+@keyframes meteorFall {
+    0% {
+        transform: translateY(0) translateX(100vw); /* 从右侧开始 */
+    }
+    100% {
+        transform: translateY(100vh) translateX(-200px); /* 飞向左下 */
+        opacity: 0;
+    }
+}
 
 /* 金色五角星动画效果 */
 .stars {
