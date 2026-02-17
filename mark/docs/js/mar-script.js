@@ -119,12 +119,14 @@ const docsList = [
     'begin.md',
     'fun.md',
     'heart.md',
-    'vilasr.md',
     'thought.md',
     'mind.md',
     'pm.md',
     'self.md',
-    'vacalith.md'
+    'vacalith.md',
+    'pain.md',
+    'movie.md',
+    'head.md'
 ];
 // 获取当前文档索引
 const currentDocIndex = docsList.indexOf(docFile);
