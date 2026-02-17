@@ -14,7 +14,7 @@ const docPath = `./docs/story/${docFile}`;
 fetch(docPath)
     .then(response => {
         if (!response.ok) {
-            throw new Error('文档未找到');
+            throw new Error('啊哦，出错了！');
         }
         return response.text();
     })
@@ -23,7 +23,7 @@ fetch(docPath)
     })
     .catch(error => {
         document.getElementById('markdown-content').innerHTML = 
-            `<h2>错误</h2><p>无法加载文档: ${error.message}</p><p>请确认文件是否存在: ${docPath}</p>`;
+            `<h2>Bingo</h2><p>文档消失了哦: ${error.message}</p><p>怎么办: ${docPath}</p>`;
     });
     
 // DOM Elements
