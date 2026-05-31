@@ -158,7 +158,7 @@ const imageSources = [
   './docs/jpg/thisme.jpg',
   './docs/jpg/body.png',
   './docs/jpg/maybe.png',
-  './docs/jpg/ted.jpg',
+  './mark/docs/jpg/gray.jpg',
   './docs/jpg/paintwo.png',
   './docs/jpg/subway.png',
   './docs/jpg/红鞋.jpg',
@@ -171,6 +171,8 @@ const imageSources = [
   './docs/jpg/lanch.jpg',
   './docs/jpg/face.jpg',
   './docs/jpg/cha.jpg',
+  './mark/docs/jpg/train.jpg',
+  './docs/jpg/ted.jpg',
 ];
 
 // 创建球的数量
