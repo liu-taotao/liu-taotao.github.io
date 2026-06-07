@@ -35,3 +35,8 @@
 </div>
 
 新领导呢是一个博士，应该是在这个行业里面干了很久了，看他也是满头白发，但人看起来不是很老，一周后逐渐了解到他的做事风格就是卷了一点，但是不管干什么，他说他都能托底。也许吧，我也不知道这个转部门的这个变化到底是好还是坏，但是呢，我觉得人生要往前看嘛，既然来了，那就好好做，了解下去。正如那位小伙伴跟我说的，人生是波浪式前进，螺旋式上升，也算是给自己打打气吧，毕竟很多东西要自己去经历后才会知道。
+
+<audio controls>
+  <source src="./docs/music/Tungevaag & Raaban - All For Love.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
