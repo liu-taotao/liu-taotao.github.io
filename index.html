@@ -1,26 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tao Liu 刘 涛 💡</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- 背景 -->
-    <div class="gif-background">
-        <img src="./mark/docs/jpg/contact-CYwNOxWg.gif" alt="Background GIF" class="background-gif">
+    <!-- GIF background (subtle texture) -->
+    <div class="gif-bg-layer">
+        <img src="./mark/docs/jpg/contact-CYwNOxWg.gif" alt="">
     </div>
+    <!-- Particle canvas background -->
+    <canvas id="particle-canvas"></canvas>
+    <!-- Bouncing bubbles -->
+    <div id="bouncing-balls-container"></div>
+    <!-- Cursor glow -->
+    <div class="cursor-glow" id="cursor-glow"></div>
+    <!-- Scroll progress -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="stars" id="stars-container"></div>
-        <div class="dino-container">
-            <div class="jumping-dino">
-                <img src="./mark/docs/jpg/image.png" alt="Dinosaur" width="35" height="35">
-            </div>
-        </div>
         <div class="nav-container">
             <div class="nav-logo">
                 <a href="#home">Tao Liu 刘 涛</a>
@@ -30,21 +33,18 @@
                     <a href="#home" class="nav-link">@This is me</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#Record" class="nav-link">@My time and life🚤</a>
+                    <a href="#Record" class="nav-link">@My time and life 🚤</a>
                 </li>
                 <li class="nav-item">
-                    <a href="https://github.com/liu-taotao" class="nav-link"  title="GitHub" rel="noopener noreferrer" target="_blank">
+                    <a href="https://github.com/liu-taotao" class="nav-link" title="GitHub" rel="noopener noreferrer" target="_blank">
                         <i class='fab fa-github fa-fw'></i>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                      <a href="#research" class="nav-link">@This is Life🚤</a>
-                </li> -->
-                <!-- <a class="nav-item" href="https://github.com/BohongHuang/bohonghuang.github.io" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i> -->
-                <!-- <li class="nav-item">
-                    <a href="#teaching" class="nav-link">Teaching</a>
-                </li> -->
-                <!-- <a href="https://github.com/BohongHuang" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github-alt fa-fw"></i></a><a href="https://www.zhihu.com/people/huang-bo-hong-72" title="知乎" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@v5.21.1/icons/zhihu.svg"></i></a><a href="https://space.bilibili.com/11941235" title="bilibili" target="_blank" rel="noopener noreffer me"><i data-svg-src="https://bohonghuang.github.io/svg/icons/bilibili.min.svg"></i></a><a href="mailto:1281299809@qq.com" title="Email" rel=" me"><i class="far fa-envelope fa-fw"></i></a></div><h3 class="home-disclaimer">所有文章均为个人学习记录，仅供分享用于交流、学习，不保证内容的准确性以及具有合法的相关素材使用权。</h3></div> -->
+                <li class="nav-item">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
             </ul>
             <div class="nav-toggle">
                 <span class="bar"></span>
@@ -59,10 +59,10 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-image">
-                    <img src="./mark/docs/jpg/index.jpg" alt="TAO" class="profile-img">
+                    <img src="./mark/docs/jpg/index.jpg" alt="Tao Liu" class="profile-img">
                 </div>
                 <div class="hero-text">
-                    <h1 class="hero-title">Tao Liu <span class="chinese-name">刘 涛</span></h1>
+                    <h1 class="hero-title">Tao Liu<span class="chinese-name"> 刘 涛</span></h1>
                     <p class="hero-subtitle">I hope my future will be filled with more happiness.</p>
                     <div class="hero-info">
                         <div class="info-item">
@@ -75,72 +75,68 @@
                         </div>
                     </div>
                     <div class="social-links">
-                        <a href="mailto:brainytao@gmail.com" class="social-link" title="Email">
+                        <a href="mailto:brainytao@gmail.com" class="social-link email" title="Email">
                             <i class="fas fa-envelope"></i>
                             <span>Email</span>
                         </a>
-                        <a href="https://twitter.com/xxxxxxxxx" class="social-link" title="Twitter" target="_blank">
+                        <a href="https://twitter.com/xxxxxxxxx" class="social-link twitter" title="Twitter" target="_blank">
                             <i class="fab fa-twitter"></i>
                             <span>Twitter</span>
                         </a>
-                        <a href="https://github.com/liu-taotao" class="social-link" title="Personal GitHub" target="_blank">
+                        <a href="https://github.com/liu-taotao" class="social-link github" title="Personal GitHub" target="_blank">
                             <i class="fab fa-github"></i>
-                            <span>Personal GitHub</span>
+                            <span>GitHub</span>
                         </a>
-                        <a href="https://github.com/liu-taotao" class="social-link" title="Team GitHub" target="_blank">
+                        <a href="https://github.com/liu-taotao" class="social-link team" title="Team GitHub" target="_blank">
                             <i class="fas fa-users"></i>
                             <span>Team</span>
                         </a>
-                        <a href="https://huggingface.co/xxxxxxxxx" class="social-link" title="Team Hugging Face" target="_blank">
+                        <a href="https://huggingface.co/xxxxxxxxx" class="social-link hf" title="Hugging Face" target="_blank">
                             <i class="fas fa-robot"></i>
                             <span>Hugging Face</span>
                         </a>
-                        <a href="https://stackoverflow.com/users/xxxxxxxxx" class="social-link" title="Stack Overflow" target="_blank">
+                        <a href="https://stackoverflow.com/users/xxxxxxxxx" class="social-link stackoverflow" title="Stack Overflow" target="_blank">
                             <i class="fab fa-stack-overflow"></i>
                             <span>Stack Overflow</span>
                         </a>
-                        <!-- <a href="https://scholar.google.com/citations?user=xxxxxxxxx=zh-CN" class="social-link" title="Google Scholar" target="_blank">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Google Scholar</span>
-                        </a> -->
                     </div>
                 </div>
-            </div>
-            
-            <!-- About Content -->
-            <div class="about-content">
-                <p>
-                    Hi, I am employed at Contemporary Amperex Technology Co., Limited (CATL) (September 2024-present) as an Engineer, primarily responsible for database and AI-related work. I earned my Bachelor's degree from <strong>Jimei University</strong> (2020-2024) and joined the Intelligent Hardware & High-Performance Computing Lab in 2021, under the supervision of Prof. Xu.<br>
-                    During my studies, I interned at several institutions, including:<br>
-                    Xiamen Milesight IoT Co., Ltd. - R&D Department (July-September 2023) as a Development Engineer (Intern)<br>
-                    Xiaomi Corporation - Mobile/Software Department (March-May 2024) as a Software R&D Engineer (Intern)
-                </p>
-                
-                <div class="internship-notice">
-                    <div class="notice-icon">🚀</div>
-                    <div class="notice-content">
-                        <h3>The books I'm reading recently</h3>
-                        <p><strong>The Tencent Story<br>How to master project management</strong></p>                        
+
+                <!-- About Content -->
+                <div class="about-content">
+                    <p>
+                        Hi, I am employed at Contemporary Amperex Technology Co., Limited (CATL) (September 2024-present) as an Engineer, primarily responsible for database and AI-related work. I earned my Bachelor's degree from <strong>Jimei University</strong> (2020-2024) and joined the Intelligent Hardware & High-Performance Computing Lab in 2021, under the supervision of Prof. Xu.<br>
+                        During my studies, I interned at several institutions, including:<br>
+                        Xiamen Milesight IoT Co., Ltd. - R&D Department (July-September 2023) as a Development Engineer (Intern)<br>
+                        Xiaomi Corporation - Mobile/Software Department (March-May 2024) as a Software R&D Engineer (Intern)
+                    </p>
+
+                    <div class="internship-notice">
+                        <div class="notice-icon">🚀</div>
+                        <div class="notice-content">
+                            <h3>The books I'm reading recently</h3>
+                            <p><strong>The Tencent Story<br>How to master project management</strong></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Awards Section -->
+    <!-- Awards / Timeline Section -->
     <section id="Record" class="awards">
         <div class="container">
             <h2 class="section-title">This is my life my experiences and my thought</h2>
             <p class="publications-note">* It might not be perfect or 'correct,' but it's authentically mine</p>
             <div class="awards-list">
-                <div class="award-item">
+                <div class="award-item scroll-animate">
                     <div class="award-year">2020-2024</div>
                     <div class="award-content">
                         <h3>Jimei University - Electronic Information Engineering</h3>
                         <p><a href="" target="_blank">I didn't waste my time in university.</a> (All my time in the laboratory and the library)</p>
                     </div>
                 </div>
-                <div class="award-item">
+                <div class="award-item scroll-animate">
                     <div class="award-year">2024 - now</div>
                     <div class="award-content">
                         <h3>Engineer at Contemporary Amperex Technology Co., Limited (CATL)</h3>
@@ -148,390 +144,55 @@
                     </div>
                 </div>
             </div>
-        </div>
-    <!-- </section> -->
-        <p class="publications-note"></p>
-    <!-- Research & Publications Section 128369 10 745-->
-    <!-- <section id="research" class="publications"> -->
-        <div class="container">
-            <!-- <h2 class="section-title"> 🚵‍♂️ Life & Bliss</h2> -->
+
+            <p class="publications-note"></p>
             <p class="publications-note">* While life can be routine, it's important to discover the sparks of joy</p>
 
-            <!-- 新的文章式出版物布局 -->
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=vilasr.md" target="_blank">
-                        <span style="font-size: 25px;">1.</span>The initial stage was filled with frustration and confusion
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2020-2021">2020 - 2021</time>
-                    </span>
-                </div>
-                <div class="content">
-                    All beginnings are like this.
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=vilasr.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+            <!-- Articles Grid -->
+            <div class="articles-grid">
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=vacalith.md" target="_blank">
-                        <span style="font-size: 24px;">2.</span>I'm stuck in the same daily loop. Where's the happiness? Heck, where have I gone?
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2022-2024">2022 - 2024</time>
-                    </span>
-                </div>
-                <div class="content">
-                    It's time to draw this chapter to a close
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=vacalith.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">01</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=vilasr.md" target="_blank">The initial stage was filled with frustration and confusion</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2020 - 2021</div><div class="article-excerpt">All beginnings are like this.</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=begin.md" target="_blank">
-                        <span style="font-size: 22px;">8.</span>Every story has to have a beginning
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2024-2025">2024 - 2025</time>
-                    </span>
-                </div>
-                <div class="content">
-                    A funny story
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=begin.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">02</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=vacalith.md" target="_blank">I'm stuck in the same daily loop. Where's the happiness?</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2022 - 2024</div><div class="article-excerpt">It's time to draw this chapter to a close</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=thought.md" target="_blank">
-                        <span style="font-size: 22px;">3.</span>My thoughts have gradually changed
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2024-2025">2024 - 2025</time>
-                    </span>
-                </div>
-                <div class="content">
-                    Learning is a necessary part of life's journey
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=thought.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">08</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=begin.md" target="_blank">Every story has to have a beginning</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2024 - 2025</div><div class="article-excerpt">A funny story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=fun.md" target="_blank">
-                        <span style="font-size: 22px;">6.</span>I dream of happiness like this
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2025 - Now</time>
-                    </span>
-                </div>
-                <div class="content">
-                    This is what I picture for my future
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=fun.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">03</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=thought.md" target="_blank">My thoughts have gradually changed</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2024 - 2025</div><div class="article-excerpt">Learning is a necessary part of life's journey</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=head.md" target="_blank">
-                        <span style="font-size: 22px;">9.</span>Finally starting to use my head
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2025 - Now</time>
-                    </span>
-                </div>
-                <div class="content">
-                    A story that's not funny at all
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=head.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">06</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=fun.md" target="_blank">I dream of happiness like this</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">This is what I picture for my future</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=heart.md" target="_blank">
-                        <span style="font-size: 22px;">10.</span>Thoughts evolve alongside life experiences
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2025 - Now</time>
-                    </span>
-                </div>
-                <div class="content">
-                    I like not being too anxious
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=heart.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">09</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=head.md" target="_blank">Finally starting to use my head</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">A story that's not funny at all</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=pm.md" target="_blank">
-                        <span style="font-size: 22px;">7.</span>I've become curious about project management
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-2025">2025 - 2025</time>
-                    </span>
-                </div>
-                <div class="content">
-                    I've always been curious about what project management really is
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=pm.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">10</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=heart.md" target="_blank">Thoughts evolve alongside life experiences</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">I like not being too anxious</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=self.md" target="_blank">
-                        <span style="font-size: 22px;">4.</span>The time has come for me to finally introduce myself
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2025 - Now</time>
-                    </span>
-                </div>
-                <div class="content">
-                    After some thought, I'd still like to do a self-introduction
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=self.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">07</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=pm.md" target="_blank">I've become curious about project management</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - 2025</div><div class="article-excerpt">I've always been curious about what project management really is</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=mind.md" target="_blank">
-                        <span style="font-size: 22px;">5.</span>What is the true story, after all?
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2025 - Now</time>
-                    </span>
-                </div>
-                <div class="content">
-                    My little story
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=mind.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">04</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=self.md" target="_blank">The time has come for me to finally introduce myself</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">After some thought, I'd still like to do a self-introduction</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=movie.md" target="_blank">
-                        <span style="font-size: 22px;">11.</span>My favorite movie
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2025-12-08</time>
-                    </span>
-                </div>
-                <div class="content">
-                    My favorite movie
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=movie.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">05</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=mind.md" target="_blank">What is the true story, after all?</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">My little story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=pain.md" target="_blank">
-                        <span style="font-size: 22px;">12.</span>a painful story
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2026-01-09</time>
-                    </span>
-                </div>
-                <div class="content">
-                    a painful story
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=pain.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">11</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=movie.md" target="_blank">My favorite movie</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025-12-08</div><div class="article-excerpt">My favorite movie</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
 
-            <article class="publication-article" itemscope itemtype="http://schema.org/Article">
-                <h1 class="article-title" itemprop="name headline">
-                    <a href="mark/mar.html?doc=amazing.md" target="_blank">
-                        <span style="font-size: 22px;">13.</span>a totally crazy story
-                    </a>
-                </h1>
-                <div class="post-meta">
-                    <span class="post-author">
-                        <i class="author fas fa-user-circle fa-fw"></i>
-                        <strong>Tao Liu</strong>
-                    </span>
-                    &nbsp;
-                    <span class="post-publish">
-                        Period: <time datetime="2025-now">2026-06-07</time>
-                    </span>
-                </div>
-                <div class="content">
-                    A truly incredible story
-                </div>
-                <div class="post-footer">
-                    <a href="mark/mar.html?doc=amazing.md" target="_blank" class="read-more">
-                        <i class="fas fa-lightbulb"></i> Read More
-                    </a>
-                </div>
-                <div class="article-divider"></div>
-            </article>
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">12</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=pain.md" target="_blank">a painful story</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-01-09</div><div class="article-excerpt">a painful story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
+
+                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">13</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=amazing.md" target="_blank">a totally crazy story</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-06-07</div><div class="article-excerpt">A truly incredible story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
+
+            </div><!-- /articles-grid -->
         </div>
     </section>
 
-    <!-- Visitor Statistics -->
-    <!-- <section class="visitor-statistics">
-        <div class="container">
-            <h2 class="section-title">Visitor Statistics</h2>
-            <div class="visitor-map">
-                <div style="height: 250px;width: 250px;margin-left: 0px;">
-                    <script type="text/javascript" id="clustrmaps" src="https://clustrmaps.com/map_v2.js?d=ZpYkmM7TcnuwV5hUFmSBK6-wcEbSUhYPqSxziPKxz3U&cl=ffffff&w=a"></script>
-                </div>
-            </div>
-        </div>
-    </section> -->
-    <div id="bouncing-balls-container"></div>
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <p>&copy; 2026 liu-taotao. All rights reserved.</p>
+                <div class="footer-dino" id="footer-dino" title="Rawr! 🦖">
+                    <img src="./mark/docs/jpg/image.png" alt="Dinosaur">
+                </div>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
 </body>
-</html> 
+</html>

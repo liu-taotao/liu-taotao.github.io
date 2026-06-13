@@ -1,36 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tao Liu 刘 涛 😜</title>
+    <title>Tao Liu 刘 涛 — Article</title>
     <link rel="stylesheet" href="../style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <link rel="stylesheet" href="./docs/css/mar-style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
-    <!-- 引入 Valine 样式 -->
+
+    <!-- Valine -->
     <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="https://bohonghuang.github.io/lib/valine/valine.min.css">
     <noscript><link rel="stylesheet" href="https://bohonghuang.github.io/lib/valine/valine.min.css"></noscript>
-
-    <!-- 引入 Valine 脚本 -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine@1.4.16/dist/Valine.min.js"></script>
 </head>
 <body>
-    <!-- 背景 -->
-    <div class="gif-background">
-        <img src="./docs/jpg/contact-CYwNOxWg.gif" alt="Background GIF" class="background-gif">
+    <!-- GIF background (subtle texture) -->
+    <div class="gif-bg-layer">
+        <img src="./docs/jpg/contact-CYwNOxWg.gif" alt="">
     </div>
+    <!-- Particle canvas background -->
+    <canvas id="particle-canvas"></canvas>
+    <!-- Bouncing bubbles -->
+    <div id="bouncing-balls-container"></div>
+    <!-- Scroll progress -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="stars" id="stars-container"></div>
-        <div class="dino-container">
-            <div class="jumping-dino">
-                <img src="./docs/jpg/image.png" alt="Dinosaur" width="35" height="35">
-            </div>
-            <div class="fire-breath"></div>
-        </div>
         <div class="nav-container">
             <div class="nav-logo">
                 <a href="../index.html#home">Tao Liu 👀</a>
@@ -40,16 +41,18 @@
                     <a href="../index.html#home" class="nav-link">@This is me</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../index.html#Record" class="nav-link">@My time and life🚤</a>
+                    <a href="../index.html#Record" class="nav-link">@My time and life 🚤</a>
                 </li>
                 <li class="nav-item">
-                    <a href="https://github.com/liu-taotao" class="nav-link"  title="GitHub" rel="noopener noreferrer" target="_blank">
+                    <a href="https://github.com/liu-taotao" class="nav-link" title="GitHub" rel="noopener noreferrer" target="_blank">
                         <i class='fab fa-github fa-fw'></i>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a href="../index.html#research" class="nav-link">Research & Publications🚤</a>
-                </li> -->
+                <li class="nav-item">
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
             </ul>
             <div class="nav-toggle">
                 <span class="bar"></span>
@@ -59,34 +62,69 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <div class="container">
-        <div id="markdown-content" class="markdown-content">
-            <p>His name is Liu Tao, a shy boy...</p>
-        </div>
+    <!-- Dual-column article layout -->
+    <div class="article-page">
+        <!-- Main content -->
+        <main class="article-body">
+            <div id="markdown-content" class="markdown-content">
+                <p>Loading...</p>
+            </div>
 
-        <!-- 新增按钮容器 -->
-        <div class="navigation-buttons">
-            <button id="prev-doc" class="nav-button">Prev</button>
-            <button id="next-doc" class="nav-button">Next</button>
-        </div>
+            <!-- Prev / Next card navigation -->
+            <div class="navigation-buttons">
+                <button id="prev-doc" class="nav-button">
+                    <span class="nav-label">← Previous</span>
+                    <span class="nav-doc-title" id="prev-title">—</span>
+                </button>
+                <button id="next-doc" class="nav-button">
+                    <span class="nav-label">Next →</span>
+                    <span class="nav-doc-title" id="next-title">—</span>
+                </button>
+            </div>
 
-        <!-- 新增分隔线 -->
-        <div class="divider"></div>
+            <div class="divider"></div>
 
-        <!-- Valine 留言容器 -->
-        <div id="valine" class="comment"></div>
-        <noscript>
-            Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
-        </noscript>
+            <!-- Valine comments -->
+            <div id="valine" class="comment"></div>
+            <noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript>
+        </main>
+
+        <!-- TOC Sidebar -->
+        <aside class="article-sidebar" id="article-sidebar">
+            <div class="toc-title">On this page</div>
+            <nav>
+                <ul class="toc-list" id="toc-list">
+                    <li class="toc-item"><span class="toc-link" style="color:var(--text-muted);cursor:default">Loading TOC...</span></li>
+                </ul>
+            </nav>
+        </aside>
     </div>
-            
-    <div id="bouncing-balls-container"></div>
-    <!-- 返回按钮 -->
-    <button class="back-to-left" 
-            style="display: block; margin: 20px auto; width: 50px; height: 50px; background: var(--secondary-color); color: white; border: none; border-radius: 50%; cursor: pointer; font-size: 18px; opacity: 1; transition: 0.3s; box-shadow: rgba(52, 152, 219, 0.3) 0px 4px 15px;">
+
+    <!-- Back button -->
+    <button class="back-to-left" aria-label="Go back">
         <i class="fas fa-arrow-left"></i>
     </button>
+
+    <!-- Image Lightbox -->
+    <div class="lightbox-overlay" id="lightbox-overlay">
+        <button class="lightbox-close" id="lightbox-close">&times;</button>
+        <img src="" alt="Enlarged view" id="lightbox-img">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 liu-taotao. All rights reserved.</p>
+                <div class="footer-dino" id="footer-dino" title="Rawr! 🦖">
+                    <img src="./docs/jpg/image.png" alt="Dinosaur">
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script src="./docs/js/mar-script.js"></script>
 </body>
 </html>

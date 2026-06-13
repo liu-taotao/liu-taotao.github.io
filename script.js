@@ -1,585 +1,296 @@
-// DOM Elements
+// ═══════════════════════════════════════════════════════════════════
+// Tao Liu — Personal Portfolio v2
+// Particles · Bubbles · 3D Tilt · Cursor Glow
+// ═══════════════════════════════════════════════════════════════════
+
+// ── DOM refs ──
+const navbar = document.querySelector('.navbar');
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-link');
-const researchInterestCards = document.querySelectorAll('.research-interest-card');
-const publicationCategories = document.querySelectorAll('.publication-category');
+const themeToggle = document.getElementById('theme-toggle');
+const scrollProgress = document.getElementById('scroll-progress');
+const cursorGlow = document.getElementById('cursor-glow');
+const particleCanvas = document.getElementById('particle-canvas');
 
-// Mobile Navigation Toggle
-navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    navToggle.classList.toggle('active');
+// ═══════════════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════════════
+function getTheme(){ return localStorage.getItem('theme') || 'dark' }
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('theme',t);
+  if(themeToggle){
+    const i=themeToggle.querySelector('i');
+    if(t==='light'){ i.className='fas fa-sun'; themeToggle.setAttribute('aria-label','Switch to dark mode') }
+    else{ i.className='fas fa-moon'; themeToggle.setAttribute('aria-label','Switch to light mode') }
+  }
+}
+setTheme(getTheme());
+if(themeToggle) themeToggle.addEventListener('click',()=>{
+  setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')
 });
 
-// Close mobile menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        navToggle.classList.remove('active');
+// ═══════════════════════════════════════════════════════════════════
+// MOBILE NAV
+// ═══════════════════════════════════════════════════════════════════
+navToggle.addEventListener('click',()=>{navMenu.classList.toggle('active');navToggle.classList.toggle('active')});
+navLinks.forEach(l=>l.addEventListener('click',()=>{navMenu.classList.remove('active');navToggle.classList.remove('active')}));
+navLinks.forEach(l=>l.addEventListener('click',e=>{
+  const h=l.getAttribute('href');if(!h||h.startsWith('http'))return;
+  e.preventDefault();const t=document.querySelector(h);
+  if(t)window.scrollTo({top:t.offsetTop-70,behavior:'smooth'})
+}));
+
+// ═══════════════════════════════════════════════════════════════════
+// SCROLL: navbar + active link + progress bar
+// ═══════════════════════════════════════════════════════════════════
+function updateScroll(){
+  const y=window.scrollY;
+  // navbar shrink
+  if(y>60) navbar.classList.add('scrolled'); else navbar.classList.remove('scrolled');
+  // active nav
+  const sp=y+120;
+  navLinks.forEach(l=>{
+    const h=l.getAttribute('href');if(!h||h.startsWith('http'))return;
+    const s=document.querySelector(h);
+    if(s&&sp>=s.offsetTop&&sp<s.offsetTop+s.offsetHeight){navLinks.forEach(x=>x.classList.remove('active'));l.classList.add('active')}
+  });
+  // progress bar
+  if(scrollProgress){
+    const docH=document.documentElement.scrollHeight-window.innerHeight;
+    scrollProgress.style.width=docH>0?(y/docH)*100+'%':'0%';
+  }
+  // back-to-top
+  if(backToTopBtn) backToTopBtn.classList.toggle('visible',y>400);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SCROLL ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════
+const scrollObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('animate')})
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+
+function initScrollAnimations(){
+  document.querySelectorAll('.scroll-animate,.award-item,.publication-article').forEach((el,i)=>{
+    if(!el.classList.contains('scroll-animate'))el.classList.add('scroll-animate');
+    el.style.transitionDelay=`${(i%2)*60}ms`;
+    scrollObserver.observe(el);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TYPEWRITER
+// ═══════════════════════════════════════════════════════════════════
+function typeWriter(el,text,speed=100){
+  let i=0;el.innerHTML='';
+  function t(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(t,speed)}}
+  t();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BACK TO TOP
+// ═══════════════════════════════════════════════════════════════════
+let backToTopBtn;
+function createBackToTop(){
+  const b=document.createElement('button');
+  b.innerHTML='<i class="fas fa-arrow-up"></i>';b.classList.add('back-to-top');
+  b.setAttribute('aria-label','Back to top');document.body.appendChild(b);
+  b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  return b;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// COPY EMAIL + TOAST
+// ═══════════════════════════════════════════════════════════════════
+function copyEmail(){
+  navigator.clipboard.writeText('brainytao@gmail.com').then(()=>showToast('📋 Email copied!'));
+}
+function showToast(msg,dur=3000){
+  const t=document.createElement('div');t.textContent=msg;
+  t.style.cssText=`position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:12px 24px;border-radius:var(--radius-full);z-index:9999;font-family:var(--font-sans);font-size:0.88rem;font-weight:500;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 24px var(--accent-glow);pointer-events:none`;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>{t.style.opacity='1'});
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>{if(t.parentNode)document.body.removeChild(t)},300)},dur);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DINO EASTER EGG
+// ═══════════════════════════════════════════════════════════════════
+function initDino(){
+  const d=document.getElementById('footer-dino');if(!d)return;
+  let c=0;
+  d.addEventListener('click',()=>{
+    c++;createSparkles(d);
+    if(c>=5){showToast('🦖 Rawr! You found the easter egg!',4000);c=0}
+  });
+}
+function createSparkles(el){
+  const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const colors=['#7c6ff7','#00cec9','#fd79a8','#ffd700','#fff'];
+  for(let i=0;i<12;i++){
+    const s=document.createElement('div'),angle=Math.PI*2*i/12,dist=30+Math.random()*20;
+    s.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:6px;height:6px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;pointer-events:none;z-index:9999;opacity:1;transition:all 0.6s cubic-bezier(0.4,0,0.2,1)`;
+    document.body.appendChild(s);
+    requestAnimationFrame(()=>{s.style.transform=`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(0)`;s.style.opacity='0'});
+    setTimeout(()=>{if(s.parentNode)document.body.removeChild(s)},650);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CURSOR GLOW
+// ═══════════════════════════════════════════════════════════════════
+function initCursorGlow(){
+  if(!cursorGlow)return;
+  let visible=false;
+  document.addEventListener('mousemove',e=>{
+    cursorGlow.style.left=e.clientX+'px';cursorGlow.style.top=e.clientY+'px';
+    if(!visible){cursorGlow.classList.add('visible');visible=true}
+  });
+  document.addEventListener('mouseleave',()=>{cursorGlow.classList.remove('visible');visible=false});
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 3D TILT ON CARDS
+// ═══════════════════════════════════════════════════════════════════
+function initTilt(){
+  document.querySelectorAll('.publication-article').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const rect=card.getBoundingClientRect();
+      const x=e.clientX-rect.left,y=e.clientY-rect.top;
+      const cx=rect.width/2,cy=rect.height/2;
+      const rx=((y-cy)/cy)*-6,ry=((x-cx)/cx)*6;
+      card.style.transform=`perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
     });
-});
-
-// Smooth scrolling for navigation links
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        
-        // 检查是否为外部链接
-        if (href.startsWith('http') || href.startsWith('https')) {
-            return; // 不阻止外部链接的默认行为
-        }
-
-        e.preventDefault(); // 阻止内部锚点链接的默认行为
-        const targetSection = document.querySelector(href);
-        
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
+    card.addEventListener('mouseleave',()=>{
+      card.style.transform='perspective(800px) rotateX(0) rotateY(0) translateY(0)';
     });
-});
-
-// Active navigation link highlighting
-function updateActiveNavLink() {
-    const scrollPos = window.scrollY + 100; // Offset for better UX
-    
-    navLinks.forEach(link => {
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            const sectionTop = targetSection.offsetTop;
-            const sectionBottom = sectionTop + targetSection.offsetHeight;
-            
-            if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            }
-        }
-    });
+  });
 }
 
-// Research interest card switching
-researchInterestCards.forEach(card => {
-    card.addEventListener('click', (e) => {
-        // Don't trigger card switch if clicking on a link
-        if (e.target.closest('.research-link')) {
-            return;
-        }
-        
-        const targetCategory = card.getAttribute('data-category');
-        
-        // Update active card
-        researchInterestCards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        
-        // Show target category, hide others
-        publicationCategories.forEach(category => {
-            if (category.id === targetCategory) {
-                category.classList.add('active');
-            } else {
-                category.classList.remove('active');
-            }
-        });
-    });
-});
-
-// Scroll animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-        }
-    });
-}, observerOptions);
-
-// Add scroll animation to elements
-function addScrollAnimations() {
-    const animateElements = document.querySelectorAll('.research-interest-card, .award-item, .publication-item, .teaching-item');
-    animateElements.forEach(el => {
-        el.classList.add('scroll-animate');
-        observer.observe(el);
-    });
-}
-
-// Navbar background on scroll
-function updateNavbarBackground() {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.boxShadow = 'none';
-    }
-}
-
-// Typing animation for hero subtitle
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    
-    type();
-}
-
-// Count animation for statistics (if any)
-function animateCounters() {
-    const counters = document.querySelectorAll('[data-count]');
-    
-    counters.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-count'));
-        const increment = target / 100;
-        let current = 0;
-        
-        const updateCount = () => {
-            if (current < target) {
-                current += increment;
-                counter.textContent = Math.ceil(current);
-                requestAnimationFrame(updateCount);
-            } else {
-                counter.textContent = target;
-            }
-        };
-        
-        updateCount();
-    });
-}
-
-// Parallax effect for hero section
-function parallaxHero() {
-    const hero = document.querySelector('.hero');
-    const scrolled = window.pageYOffset;
-    const rate = scrolled * -0.5;
-    
-    if (hero) {
-        hero.style.transform = `translateY(${rate}px)`;
-    }
-}
-
-// Search functionality for publications (optional enhancement)
-function searchPublications(query) {
-    const publications = document.querySelectorAll('.publication-item');
-    const searchTerm = query.toLowerCase();
-    
-    publications.forEach(pub => {
-        const title = pub.querySelector('.pub-title').textContent.toLowerCase();
-        const authors = pub.querySelector('.pub-authors').textContent.toLowerCase();
-        const venue = pub.querySelector('.pub-venue').textContent.toLowerCase();
-        
-        if (title.includes(searchTerm) || authors.includes(searchTerm) || venue.includes(searchTerm)) {
-            pub.style.display = 'block';
-        } else {
-            pub.style.display = 'none';
-        }
-    });
-}
-
-// Back to top button
-function createBackToTopButton() {
-    const backToTop = document.createElement('button');
-    backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
-    backToTop.classList.add('back-to-top');
-    backToTop.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: var(--secondary-color);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 18px;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 1000;
-        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-    `;
-    
-    document.body.appendChild(backToTop);
-    
-    backToTop.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    
-    return backToTop;
-}
-
-// Show/hide back to top button
-function toggleBackToTopButton(button) {
-    if (window.scrollY > 300) {
-        button.style.opacity = '1';
-        button.style.visibility = 'visible';
-    } else {
-        button.style.opacity = '0';
-        button.style.visibility = 'hidden';
-    }
-}
-
-// Lazy loading for images
-function lazyLoadImages() {
-    const images = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    images.forEach(img => imageObserver.observe(img));
-}
-
-// Copy email to clipboard
-function copyEmail() {
-    const email = 'brainytao@gmail.com';
-    navigator.clipboard.writeText(email).then(() => {
-        // Show toast notification
-        showToast('Email copied to clipboard!');
-    });
-}
-
-// Toast notification
-function showToast(message, duration = 3000) {
-    const toast = document.createElement('div');
-    toast.textContent = message;
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: var(--primary-color);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 25px;
-        z-index: 9999;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    `;
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.style.opacity = '1';
-    }, 100);
-    
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => {
-            document.body.removeChild(toast);
-        }, 300);
-    }, duration);
-}
-// 金色五角星下落效果
-document.addEventListener('DOMContentLoaded', function() {
-    const starsContainer = document.getElementById('stars-container');
-    
-    function createStar() {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        
-        // 创建五角星字符
-        star.innerHTML = '★';
-        
-        // 随机大小 (10-20px)
-        const size = Math.random() * 10 + 10;
-        star.style.fontSize = `${size}px`;
-        
-        // 随机位置
-        star.style.left = `${Math.random() * 100}%`;
-        
-        // 随机透明度
-        star.style.opacity = Math.random() * 0.7 + 0.3;
-        
-        // 随机动画时长 (3-6秒)
-        const duration = Math.random() * 3 + 3;
-        star.style.animationDuration = `${duration}s`;
-        
-        starsContainer.appendChild(star);
-        
-        // 动画结束后移除星星
-        setTimeout(() => {
-            if (star.parentNode) {
-                star.parentNode.removeChild(star);
-            }
-        }, duration * 1000);
-    }
-    
-    // 定期创建星星 (每300毫秒创建一个)
-    setInterval(createStar, 300);
-});
-// Theme toggle (dark/light mode) - optional enhancement
-function createThemeToggle() {
-    const themeToggle = document.createElement('button');
-    themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-    themeToggle.classList.add('theme-toggle');
-    themeToggle.style.cssText = `
-        position: fixed;
-        bottom: 90px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 18px;
-        transition: all 0.3s ease;
-        z-index: 1000;
-        box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-    `;
-    
-    document.body.appendChild(themeToggle);
-    
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        const icon = themeToggle.querySelector('i');
-        if (document.body.classList.contains('dark-theme')) {
-            icon.className = 'fas fa-sun';
-        } else {
-            icon.className = 'fas fa-moon';
-        }
-    });
-}
-
-// Event Listeners
-window.addEventListener('scroll', () => {
-    updateActiveNavLink();
-    updateNavbarBackground();
-    // parallaxHero(); // Uncomment for parallax effect
-});
-
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    addScrollAnimations();
-    
-    // Create back to top button
-    const backToTopBtn = createBackToTopButton();
-    window.addEventListener('scroll', () => toggleBackToTopButton(backToTopBtn));
-    
-    // Optional: Create theme toggle
-    // createThemeToggle();
-    
-    // Optional: Lazy load images
-    lazyLoadImages();
-    
-    // Optional: Type writer effect for hero subtitle
-    const heroSubtitle = document.querySelector('.hero-subtitle');
-    if (heroSubtitle) {
-        const text = heroSubtitle.textContent;
-        setTimeout(() => typeWriter(heroSubtitle, text, 50), 1000);
-    }
-    
-    // Add click event to email social link for copying
-    const emailLink = document.querySelector('a[href^="mailto:"]');
-    if (emailLink) {
-        emailLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            copyEmail();
-        });
-    }
-});
-
-// Performance optimization: Debounce scroll events
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Apply debouncing to scroll-heavy functions
-const debouncedScroll = debounce(() => {
-    updateActiveNavLink();
-    updateNavbarBackground();
-}, 10);
-
-window.addEventListener('scroll', debouncedScroll);
-
-// Smooth reveal animations for sections
-const revealSections = () => {
-    const sections = document.querySelectorAll('section');
-    sections.forEach(section => {
-        const sectionTop = section.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-        
-        if (sectionTop < windowHeight * 0.8) {
-            section.classList.add('section-visible');
-        }
-    });
-};
-
-window.addEventListener('scroll', revealSections);
-
-// Preloader (optional)
-function createPreloader() {
-    const preloader = document.createElement('div');
-    preloader.classList.add('preloader');
-    preloader.innerHTML = `
-        <div class="preloader-content">
-            <div class="spinner"></div>
-            <p>Loading...</p>
-        </div>
-    `;
-    preloader.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        opacity: 1;
-        transition: opacity 0.5s ease;
-    `;
-    
-    document.body.appendChild(preloader);
-    
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            preloader.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(preloader);
-            }, 500);
-        }, 1000);
-    });
-}
-
-
-
-// 图片列表（请根据实际文件名修改）
-const imageSources = [
-  './mark/docs/jpg/index.jpg',
-  './mark/docs/jpg/kaka.jpg',
-  './mark/docs/jpg/tree.png',
-  './mark/docs/jpg/thisme.jpg',
-  './mark/docs/jpg/body.png',
-  './mark/docs/jpg/maybe.png',
-  './mark/docs/jpg/gray.jpg',
-  './mark/docs/jpg/paintwo.png',
-  './mark/docs/jpg/subway.png',
-  './mark/docs/jpg/红鞋.jpg',
-  './mark/docs/jpg/茶杯头.webp',
-  './mark/docs/jpg/sub.jpg',
-  './mark/docs/jpg/city.png',
-  './mark/docs/jpg/painone.png',
-  './mark/docs/jpg/杯子.jpg',
-  './mark/docs/jpg/ball.jpg',
-  './mark/docs/jpg/lanch.jpg',
-  './mark/docs/jpg/face.jpg',
-  './mark/docs/jpg/cha.jpg',
-  './mark/docs/jpg/train.jpg',
-  './mark/docs/jpg/ted.jpg',
+// ═══════════════════════════════════════════════════════════════════
+// BOUNCING BUBBLES (upgraded: slower, softer)
+// ═══════════════════════════════════════════════════════════════════
+const imageSources=[
+  './mark/docs/jpg/index.jpg','./mark/docs/jpg/kaka.jpg','./mark/docs/jpg/tree.png',
+  './mark/docs/jpg/thisme.jpg','./mark/docs/jpg/body.png','./mark/docs/jpg/maybe.png',
+  './mark/docs/jpg/gray.jpg','./mark/docs/jpg/paintwo.png','./mark/docs/jpg/subway.png',
+  './mark/docs/jpg/红鞋.jpg','./mark/docs/jpg/茶杯头.webp','./mark/docs/jpg/sub.jpg',
+  './mark/docs/jpg/city.png','./mark/docs/jpg/painone.png','./mark/docs/jpg/杯子.jpg',
+  './mark/docs/jpg/ball.jpg','./mark/docs/jpg/lanch.jpg','./mark/docs/jpg/face.jpg',
+  './mark/docs/jpg/cha.jpg','./mark/docs/jpg/train.jpg','./mark/docs/jpg/ted.jpg',
 ];
-
-// 创建球的数量
-const ballCount = imageSources.length;
-
-// 获取容器
-const container = document.getElementById('bouncing-balls-container');
-const balls = [];
-
-// 初始化每个球
-for (let i = 0; i < ballCount; i++) {
-  const ball = document.createElement('div');
-  ball.className = 'bouncing-ball';
-  ball.style.backgroundImage = `url(${imageSources[i]})`;
-  
-  // 随机大小（40px ~ 100px）
-  const size = Math.random() * 60 + 40;
-  ball.style.width = `${size}px`;
-  ball.style.height = `${size}px`;
-
-  // 初始位置
-  const x = Math.random() * (window.innerWidth - size);
-  const y = Math.random() * (window.innerHeight - size);
-//   ball.style.left = `${x}px`;
-//   ball.style.top = `${y}px`;
-
-  // 随机速度
-  const vx = (Math.random() - 0.5) * 4;
-  const vy = (Math.random() - 0.5) * 4;
-
-  container.appendChild(ball);
-  balls.push({
-    element: ball,
-    x: x,
-    y: y,
-    vx: vx,
-    vy: vy,
-    size: size
+function initBubbles(){
+  const container=document.getElementById('bouncing-balls-container');
+  if(!container)return;
+  const balls=[];
+  imageSources.forEach(src=>{
+    const ball=document.createElement('div');ball.className='bouncing-ball';
+    ball.style.backgroundImage=`url(${src})`;
+    const size=Math.random()*60+50;
+    ball.style.width=size+'px';ball.style.height=size+'px';
+    const x=Math.random()*(window.innerWidth-size),y=Math.random()*(window.innerHeight-size);
+    const vx=(Math.random()-0.5)*2.2,vy=(Math.random()-0.5)*2.2;
+    ball.style.transform=`translate(${x}px,${y}px)`;
+    container.appendChild(ball);
+    balls.push({el:ball,x,y,vx,vy,size});
   });
-  
-  // 立即应用初始位置
-  ball.style.transform = `translate(${x}px, ${y}px)`;
+  function animate(){
+    const w=window.innerWidth,h=window.innerHeight;
+    balls.forEach(b=>{
+      b.x+=b.vx;b.y+=b.vy;
+      if(b.x<=0||b.x+b.size>=w)b.vx=-b.vx,b.x=Math.max(0,Math.min(w-b.size,b.x));
+      if(b.y<=0||b.y+b.size>=h)b.vy=-b.vy,b.y=Math.max(0,Math.min(h-b.size,b.y));
+      b.el.style.transform=`translate(${b.x}px,${b.y}px)`;
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
 
-// 动画循环
-function animate() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+// ═══════════════════════════════════════════════════════════════════
+// PARTICLE NETWORK CANVAS
+// ═══════════════════════════════════════════════════════════════════
+function initParticles(){
+  const canvas=particleCanvas;if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let w,h,particles=[],mouse={x:null,y:null,radius:120};
+  const PARTICLE_COUNT=80;
 
-  balls.forEach(ball => {
-    // 更新位置
-    ball.x += ball.vx;
-    ball.y += ball.vy;
+  function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
 
-    // 边界反弹
-    if (ball.x <= 0 || ball.x + ball.size >= w) {
-      ball.vx = -ball.vx;
-      ball.x = Math.max(0, Math.min(w - ball.size, ball.x));
-    }
-    if (ball.y <= 0 || ball.y + ball.size >= h) {
-      ball.vy = -ball.vy;
-      ball.y = Math.max(0, Math.min(h - ball.size, ball.y));
-    }
+  for(let i=0;i<PARTICLE_COUNT;i++){
+    particles.push({
+      x:Math.random()*w,y:Math.random()*h,
+      vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5,
+      r:Math.random()*1.8+0.8
+    });
+  }
 
-    // 应用位置
-    // ball.element.style.left = `${ball.x}px`;
-    // ball.element.style.top = `${ball.y}px`;
-    ball.element.style.transform = `translate(${ball.x}px, ${ball.y}px)`;
-  });
+  document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+  document.addEventListener('mouseleave',()=>{mouse.x=null;mouse.y=null});
 
-  requestAnimationFrame(animate);
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach((p,i)=>{
+      // Move
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>w)p.vx=-p.vx;if(p.y<0||p.y>h)p.vy=-p.vy;
+      // Mouse repulsion
+      if(mouse.x!==null){
+        const dx=mouse.x-p.x,dy=mouse.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<mouse.radius){
+          const force=(mouse.radius-dist)/mouse.radius;
+          p.x-=dx*force*0.03;p.y-=dy*force*0.03;
+        }
+      }
+      // Draw particle
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(124,111,247,0.45)';ctx.fill();
+      // Draw connections
+      for(let j=i+1;j<PARTICLE_COUNT;j++){
+        const q=particles[j];
+        const dx=p.x-q.x,dy=p.y-q.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<130){
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle=`rgba(124,111,247,${0.08*(1-dist/130)})`;
+          ctx.lineWidth=0.5;ctx.stroke();
+        }
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
 }
 
-// 启动动画
-animate();
+// ═══════════════════════════════════════════════════════════════════
+// DEBOUNCE
+// ═══════════════════════════════════════════════════════════════════
+function debounce(fn,ms){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 
-// 响应窗口大小变化
-window.addEventListener('resize', () => {
-  // 可选：重置位置或重新计算边界
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  initScrollAnimations();
+  backToTopBtn=createBackToTop();
+  initCursorGlow();
+  initTilt();
+  initBubbles();
+  initParticles();
+  initDino();
+
+  // Typewriter
+  const sub=document.querySelector('.hero-subtitle');
+  if(sub){const txt=sub.textContent;setTimeout(()=>typeWriter(sub,txt,50),600)}
+
+  // Email copy
+  const em=document.querySelector('a[href^="mailto:"]');
+  if(em)em.addEventListener('click',e=>{e.preventDefault();copyEmail()});
+
+  // Scroll listener
+  window.addEventListener('scroll',debounce(updateScroll,8),{passive:true});
+  updateScroll();
 });

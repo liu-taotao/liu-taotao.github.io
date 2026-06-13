@@ -1,252 +1,302 @@
-// 获取URL参数
-function getUrlParameter(name) {
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    var results = regex.exec(window.location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+// ═══════════════════════════════════════════════════════════════════
+// Tao Liu — Article Viewer v2
+// TOC · Lightbox · Code Highlighting · Reading Progress
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Theme ──
+function getTheme(){ return localStorage.getItem('theme')||'dark' }
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('theme',t);
+  const tg=document.getElementById('theme-toggle');
+  if(tg){const i=tg.querySelector('i');i.className=t==='light'?'fas fa-sun':'fas fa-moon'}
+}
+setTheme(getTheme());
+const themeToggle=document.getElementById('theme-toggle');
+if(themeToggle)themeToggle.addEventListener('click',()=>{
+  setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+
+// ── URL helper ──
+function getUrlParameter(name){
+  name=name.replace(/[\[]/,'\\[').replace(/[\]]/,'\\]');
+  var regex=new RegExp('[\\?&]'+name+'=([^&#]*)');
+  var results=regex.exec(window.location.search);
+  return results===null?'':decodeURIComponent(results[1].replace(/\+/g,' '));
 }
 
-// 获取要加载的文档
-const docFile = getUrlParameter('doc') || 'vilasr.md';
-const docPath = `./docs/story/${docFile}`;
+// ── Docs list ──
+const docsList=[
+  'vilasr.md','begin.md','fun.md','heart.md','thought.md',
+  'mind.md','pm.md','self.md','vacalith.md','pain.md','movie.md','head.md','amazing.md'
+];
+const docFile=getUrlParameter('doc')||'vilasr.md';
+const currentIdx=docsList.indexOf(docFile);
 
-// 获取并渲染markdown文件
+// ── Doc title mapping ──
+const docTitles={
+  'vilasr.md':'The initial stage',
+  'begin.md':'Every story has a beginning',
+  'fun.md':'I dream of happiness',
+  'heart.md':'Thoughts evolve',
+  'thought.md':'My thoughts changed',
+  'mind.md':'What is the true story',
+  'pm.md':'Curious about PM',
+  'self.md':'Introduce myself',
+  'vacalith.md':'Daily loop',
+  'pain.md':'A painful story',
+  'movie.md':'My favorite movie',
+  'head.md':'Using my head',
+  'amazing.md':'amazing story'
+};
+
+// ── Update Prev/Next button titles ──
+function updateNavButtons(){
+  const prevTitle=document.getElementById('prev-title');
+  const nextTitle=document.getElementById('next-title');
+  if(currentIdx>0)prevTitle.textContent=docTitles[docsList[currentIdx-1]]||docsList[currentIdx-1];
+  else prevTitle.textContent='—';
+  if(currentIdx<docsList.length-1)nextTitle.textContent=docTitles[docsList[currentIdx+1]]||docsList[currentIdx+1];
+  else nextTitle.textContent='—';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BUILD TABLE OF CONTENTS
+// ═══════════════════════════════════════════════════════════════════
+function buildTOC(){
+  const content=document.getElementById('markdown-content');
+  const tocList=document.getElementById('toc-list');
+  if(!content||!tocList)return;
+
+  const headings=content.querySelectorAll('h1,h2,h3');
+  if(headings.length===0){tocList.innerHTML='<li class="toc-item"><span class="toc-link" style="color:var(--text-muted);cursor:default">No headings</span></li>';return}
+
+  tocList.innerHTML='';
+  headings.forEach((h,i)=>{
+    // Add ID to heading for anchor linking
+    const id='heading-'+i;
+    h.id=id;
+
+    const li=document.createElement('li');li.className='toc-item';
+    const a=document.createElement('a');
+    a.className='toc-link';
+    if(h.tagName==='H3')a.classList.add('toc-h3');
+    a.href='#'+id;
+    a.textContent=h.textContent.trim();
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      h.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    li.appendChild(a);tocList.appendChild(li);
+  });
+}
+
+// ── TOC active heading highlight ──
+function initTOCHighlight(){
+  const tocLinks=document.querySelectorAll('.toc-link');
+  if(tocLinks.length===0)return;
+  const headings=document.querySelectorAll('#markdown-content h1[id],#markdown-content h2[id],#markdown-content h3[id]');
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      const id=e.target.id;
+      tocLinks.forEach(l=>l.classList.remove('active'));
+      const match=document.querySelector(`.toc-link[href="#${id}"]`);
+      if(match)match.classList.add('active');
+    });
+  },{threshold:0.3,rootMargin:'-60px 0px -40% 0px'});
+
+  headings.forEach(h=>observer.observe(h));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// IMAGE LIGHTBOX
+// ═══════════════════════════════════════════════════════════════════
+function initLightbox(){
+  const overlay=document.getElementById('lightbox-overlay');
+  const img=document.getElementById('lightbox-img');
+  if(!overlay||!img)return;
+
+  // Attach click to all images in markdown content
+  const content=document.getElementById('markdown-content');
+  if(!content)return;
+
+  content.addEventListener('click',e=>{
+    const target=e.target;
+    if(target.tagName==='IMG'){
+      img.src=target.src;
+      img.alt=target.alt||'Enlarged view';
+      overlay.classList.add('open');
+      document.body.style.overflow='hidden';
+    }
+  });
+
+  // Close: click overlay or X button or ESC
+  overlay.addEventListener('click',e=>{
+    if(e.target===overlay||e.target.classList.contains('lightbox-close')){
+      overlay.classList.remove('open');
+      document.body.style.overflow='';
+    }
+  });
+  document.getElementById('lightbox-close').addEventListener('click',()=>{
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&overlay.classList.contains('open')){
+      overlay.classList.remove('open');
+      document.body.style.overflow='';
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// READING PROGRESS
+// ═══════════════════════════════════════════════════════════════════
+function initReadingProgress(){
+  const bar=document.getElementById('scroll-progress');
+  if(!bar)return;
+  window.addEventListener('scroll',()=>{
+    const h=document.documentElement.scrollHeight-window.innerHeight;
+    bar.style.width=h>0?(window.scrollY/h)*100+'%':'0%';
+  },{passive:true});
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LOAD & RENDER MARKDOWN
+// ═══════════════════════════════════════════════════════════════════
+const docPath=`./docs/story/${docFile}`;
 fetch(docPath)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('啊哦，出错了！');
-        }
-        return response.text();
-    })
-    .then(text => {
-        document.getElementById('markdown-content').innerHTML = marked.parse(text);
-    })
-    .catch(error => {
-        document.getElementById('markdown-content').innerHTML = 
-            `<h2>Bingo</h2><p>文档消失了哦: ${error.message}</p><p>怎么办: ${docPath}</p>`;
-    });
-    
-// DOM Elements
-const navToggle = document.querySelector('.nav-toggle');
-const navMenu = document.querySelector('.nav-menu');
-const navLinks = document.querySelectorAll('.nav-link');
+  .then(r=>{if(!r.ok)throw new Error('File not found');return r.text()})
+  .then(text=>{
+    document.getElementById('markdown-content').innerHTML=marked.parse(text);
+    // Post-render setup
+    buildTOC();
+    initTOCHighlight();
+    initLightbox();
+    updateNavButtons();
+    // Highlight code blocks
+    if(window.hljs)hljs.highlightAll();
+  })
+  .catch(err=>{
+    document.getElementById('markdown-content').innerHTML=
+      `<h1>Oops</h1><p>The article vanished: ${err.message}</p><p>Path: ${docPath}</p>`;
+    updateNavButtons();
+  });
 
-// Mobile Navigation Toggle
-navToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    navToggle.classList.toggle('active');
+// ═══════════════════════════════════════════════════════════════════
+// MOBILE NAV
+// ═══════════════════════════════════════════════════════════════════
+const navToggle=document.querySelector('.nav-toggle');
+const navMenu=document.querySelector('.nav-menu');
+navToggle.addEventListener('click',()=>{navMenu.classList.toggle('active');navToggle.classList.toggle('active')});
+document.querySelectorAll('.nav-link').forEach(l=>{
+  l.addEventListener('click',()=>{navMenu.classList.remove('active');navToggle.classList.remove('active')});
 });
 
-// Close mobile menu when clicking on a link
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        navToggle.classList.remove('active');
-    });
+// ── Back button ──
+document.querySelector('.back-to-left').addEventListener('click',()=>{
+  window.location.href='../index.html#Record';
 });
 
-// 金色五角星下落效果
-document.addEventListener('DOMContentLoaded', function() {
-    const starsContainer = document.getElementById('stars-container');
-    
-    function createStar() {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        
-        // 创建五角星字符
-        star.innerHTML = '★';
-        
-        // 随机大小 (10-20px)
-        const size = Math.random() * 10 + 10;
-        star.style.fontSize = `${size}px`;
-        
-        // 随机位置
-        star.style.left = `${Math.random() * 100}%`;
-        
-        // 随机透明度
-        star.style.opacity = Math.random() * 0.7 + 0.3;
-        
-        // 随机动画时长 (3-6秒)
-        const duration = Math.random() * 3 + 3;
-        star.style.animationDuration = `${duration}s`;
-        
-        starsContainer.appendChild(star);
-        
-        // 动画结束后移除星星
-        setTimeout(() => {
-            if (star.parentNode) {
-                star.parentNode.removeChild(star);
-            }
-        }, duration * 1000);
+// ═══════════════════════════════════════════════════════════════════
+// PREV / NEXT NAVIGATION
+// ═══════════════════════════════════════════════════════════════════
+document.getElementById('prev-doc').addEventListener('click',()=>{
+  if(currentIdx>0)window.location.href=`?doc=${docsList[currentIdx-1]}`;
+  else alert('Already the first article!');
+});
+document.getElementById('next-doc').addEventListener('click',()=>{
+  if(currentIdx<docsList.length-1)window.location.href=`?doc=${docsList[currentIdx+1]}`;
+  else alert('Already the last article!');
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// VALINE COMMENTS
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  const commentDoc=getUrlParameter('doc')||'vilasr.md';
+  new Valine({
+    el:'#valine',appId:'a1y0WgrUeaPJfMKW0PYTsInm-gzGzoHsz',appKey:'xmlWz9A1uOYxyaf9NJf5iGOK',
+    avatar:'retrod',lang:'zh-cn',placeholder:'Your comment ...',pageSize:10,
+    visitor:true,recordIP:true,highlight:true,
+    emojiCDN:'https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/',
+    emojiMaps:{},path:`./docs/story/${commentDoc}`
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// DINO EASTER EGG
+// ═══════════════════════════════════════════════════════════════════
+function initDino(){
+  const d=document.getElementById('footer-dino');if(!d)return;
+  let c=0;
+  d.addEventListener('click',()=>{
+    c++;
+    const r=d.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+    const colors=['#7c6ff7','#00cec9','#fd79a8','#ffd700','#fff'];
+    for(let i=0;i<12;i++){
+      const s=document.createElement('div'),angle=Math.PI*2*i/12,dist=30+Math.random()*20;
+      s.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:6px;height:6px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;pointer-events:none;z-index:9999;opacity:1;transition:all 0.6s cubic-bezier(0.4,0,0.2,1)`;
+      document.body.appendChild(s);
+      requestAnimationFrame(()=>{s.style.transform=`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px) scale(0)`;s.style.opacity='0'});
+      setTimeout(()=>{if(s.parentNode)document.body.removeChild(s)},650);
     }
-    
-    // 定期创建星星 (每300毫秒创建一个)
-    setInterval(createStar, 300);
-});
-
-
-// 返回按钮功能
-document.querySelector('.back-to-left').addEventListener('click', function() {
-    window.location.href = '../index.html#research'; // 跳转到 index.html 的 Life & Bliss 部分
-});
-// 初始化 Valine
-document.addEventListener('DOMContentLoaded', function () {
-    // 获取当前加载的文档路径
-    const docFile = getUrlParameter('doc') || 'vilasr.md';
-    const docPath = `./docs/story/${docFile}`;
-
-    // 初始化 Valine
-    new Valine({
-        el: '#valine', // 指定留言容器
-        appId: 'a1y0WgrUeaPJfMKW0PYTsInm-gzGzoHsz', 
-        appKey: 'xmlWz9A1uOYxyaf9NJf5iGOK', 
-        avatar: 'retrod', 
-        lang: 'zh-cn', // 语言设置
-        placeholder: '你的评论 ...', // 输入框占位符
-        pageSize: 10, // 每页显示的评论数量
-        visitor: true, // 是否启用访问量统计
-        recordIP: true, // 是否记录用户 IP
-        highlight: true, // 是否启用代码高亮
-        emojiCDN: 'https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/', // 表情 CDN 地址
-        emojiMaps: { /* 表情映射 */ },
-        path: docPath // 动态设置留言路径，确保每个 Markdown 文件有独立的留言区
-    });
-});
-
-// 文档列表
-const docsList = [
-    'vilasr.md',
-    'begin.md',
-    'fun.md',
-    'heart.md',
-    'thought.md',
-    'mind.md',
-    'pm.md',
-    'self.md',
-    'vacalith.md',
-    'pain.md',
-    'movie.md',
-    'head.md'
-];
-// 获取当前文档索引
-const currentDocIndex = docsList.indexOf(docFile);
-// 上一篇按钮
-document.getElementById('prev-doc').addEventListener('click', () => {
-    if (currentDocIndex > 0) {
-        const prevDoc = docsList[currentDocIndex - 1];
-        window.location.href = `?doc=${prevDoc}`;
-    } else {
-        alert('已经是第一篇文档！');
+    if(c>=5){
+      const t=document.createElement('div');t.textContent='🦖 Rawr! You found the easter egg!';
+      t.style.cssText='position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:12px 24px;border-radius:9999px;z-index:9999;font-family:var(--font-sans);font-size:0.88rem;font-weight:500;opacity:0;transition:opacity 0.3s;box-shadow:0 4px 24px var(--accent-glow);pointer-events:none';
+      document.body.appendChild(t);requestAnimationFrame(()=>{t.style.opacity='1'});
+      setTimeout(()=>{t.style.opacity='0';setTimeout(()=>{if(t.parentNode)document.body.removeChild(t)},300)},4000);
+      c=0;
     }
-});
-
-// 下一篇按钮
-document.getElementById('next-doc').addEventListener('click', () => {
-    if (currentDocIndex < docsList.length - 1) {
-        const nextDoc = docsList[currentDocIndex + 1];
-        window.location.href = `?doc=${nextDoc}`;
-    } else {
-        alert('已经是最后一篇文档！');
-    }
-});
-
-// 图片列表（请根据实际文件名修改）
-const imageSources = [
-  './docs/jpg/index.jpg',
-  './docs/jpg/kaka.jpg',
-  './docs/jpg/tree.png',
-  './docs/jpg/thisme.jpg',
-  './docs/jpg/body.png',
-  './docs/jpg/maybe.png',
-  './mark/docs/jpg/gray.jpg',
-  './docs/jpg/paintwo.png',
-  './docs/jpg/subway.png',
-  './docs/jpg/红鞋.jpg',
-  './docs/jpg/茶杯头.webp',
-  './docs/jpg/sub.jpg',
-  './docs/jpg/city.png',
-  './docs/jpg/painone.png',
-  './docs/jpg/杯子.jpg',
-  './docs/jpg/ball.jpg',
-  './docs/jpg/lanch.jpg',
-  './docs/jpg/face.jpg',
-  './docs/jpg/cha.jpg',
-  './mark/docs/jpg/train.jpg',
-  './docs/jpg/ted.jpg',
-];
-
-// 创建球的数量
-const ballCount = imageSources.length;
-
-// 获取容器
-const container = document.getElementById('bouncing-balls-container');
-const balls = [];
-
-// 初始化每个球
-for (let i = 0; i < ballCount; i++) {
-  const ball = document.createElement('div');
-  ball.className = 'bouncing-ball';
-  ball.style.backgroundImage = `url(${imageSources[i]})`;
-  
-  // 随机大小（40px ~ 100px）
-  const size = Math.random() * 60 + 40;
-  ball.style.width = `${size}px`;
-  ball.style.height = `${size}px`;
-
-  // 初始位置
-  const x = Math.random() * (window.innerWidth - size);
-  const y = Math.random() * (window.innerHeight - size);
-//   ball.style.left = `${x}px`;
-//   ball.style.top = `${y}px`;
-
-  // 随机速度
-  const vx = (Math.random() - 0.5) * 4;
-  const vy = (Math.random() - 0.5) * 4;
-
-  container.appendChild(ball);
-  balls.push({
-    element: ball,
-    x: x,
-    y: y,
-    vx: vx,
-    vy: vy,
-    size: size
   });
 }
 
-// 动画循环
-function animate() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-
-  balls.forEach(ball => {
-    // 更新位置
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-
-    // 边界反弹
-    if (ball.x <= 0 || ball.x + ball.size >= w) {
-      ball.vx = -ball.vx;
-      ball.x = Math.max(0, Math.min(w - ball.size, ball.x));
-    }
-    if (ball.y <= 0 || ball.y + ball.size >= h) {
-      ball.vy = -ball.vy;
-      ball.y = Math.max(0, Math.min(h - ball.size, ball.y));
-    }
-
-    // 应用位置
-    // ball.element.style.left = `${ball.x}px`;
-    // ball.element.style.top = `${ball.y}px`;
-    ball.element.style.transform = `translate(${ball.x}px, ${ball.y}px)`;
+// ═══════════════════════════════════════════════════════════════════
+// BOUNCING BUBBLES (elegant, slow)
+// ═══════════════════════════════════════════════════════════════════
+const imageSources=[
+  './docs/jpg/index.jpg','./docs/jpg/kaka.jpg','./docs/jpg/tree.png',
+  './docs/jpg/thisme.jpg','./docs/jpg/body.png','./docs/jpg/maybe.png',
+  './docs/jpg/gray.jpg','./docs/jpg/paintwo.png','./docs/jpg/subway.png',
+  './docs/jpg/红鞋.jpg','./docs/jpg/茶杯头.webp','./docs/jpg/sub.jpg',
+  './docs/jpg/city.png','./docs/jpg/painone.png','./docs/jpg/杯子.jpg',
+  './docs/jpg/ball.jpg','./docs/jpg/lanch.jpg','./docs/jpg/face.jpg',
+  './docs/jpg/cha.jpg','./docs/jpg/train.jpg','./docs/jpg/ted.jpg',
+];
+function initBubbles(){
+  const container=document.getElementById('bouncing-balls-container');
+  if(!container)return;
+  const balls=[];
+  imageSources.forEach(src=>{
+    const ball=document.createElement('div');ball.className='bouncing-ball';
+    ball.style.backgroundImage=`url(${src})`;
+    const size=Math.random()*60+50;
+    ball.style.width=size+'px';ball.style.height=size+'px';
+    const x=Math.random()*(window.innerWidth-size),y=Math.random()*(window.innerHeight-size);
+    const vx=(Math.random()-0.5)*2.2,vy=(Math.random()-0.5)*2.2;
+    ball.style.transform=`translate(${x}px,${y}px)`;
+    container.appendChild(ball);
+    balls.push({el:ball,x,y,vx,vy,size});
   });
-
-  requestAnimationFrame(animate);
+  function animate(){
+    const w=window.innerWidth,h=window.innerHeight;
+    balls.forEach(b=>{
+      b.x+=b.vx;b.y+=b.vy;
+      if(b.x<=0||b.x+b.size>=w)b.vx=-b.vx,b.x=Math.max(0,Math.min(w-b.size,b.x));
+      if(b.y<=0||b.y+b.size>=h)b.vy=-b.vy,b.y=Math.max(0,Math.min(h-b.size,b.y));
+      b.el.style.transform=`translate(${b.x}px,${b.y}px)`;
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
 }
 
-// 启动动画
-animate();
-
-// 响应窗口大小变化
-window.addEventListener('resize', () => {
-  // 可选：重置位置或重新计算边界
+// ── Init ──
+document.addEventListener('DOMContentLoaded',()=>{
+  initReadingProgress();
+  initDino();
+  initBubbles();
+  updateNavButtons();
 });
