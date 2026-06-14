@@ -143,6 +143,197 @@ img{display:block;max-width:100%}
 [data-theme="light"] .articles-grid{box-shadow:0 1px 4px rgba(0,0,0,0.04)}
 
 /* ═══════════════════════════════════════════════════════════════════════
+   NAV RACER — MapleStory-style multi-car racing track 🏁
+   ═══════════════════════════════════════════════════════════════════════ */
+.nav-racer-track{
+  position:absolute;bottom:0;left:0;right:0;height:26px;
+  overflow:hidden;pointer-events:none;z-index:0;
+}
+/* ── Road surface (rainbow stripe + asphalt) ── */
+.racer-road{
+  position:absolute;bottom:0;left:0;right:0;height:100%;
+  /* rainbow stripe — animated gradient with rhythm */
+  --rainbow-1:#ff6b6b;--rainbow-2:#ff922b;--rainbow-3:#ffd43b;
+  --rainbow-4:#69db7c;--rainbow-5:#4dabf7;--rainbow-6:#845ef7;
+  background:
+    /* rainbow glow line */
+    linear-gradient(0deg,transparent 0px,transparent 2px,
+      var(--rainbow-1) 2px,var(--rainbow-2) 3px,var(--rainbow-3) 4px,
+      var(--rainbow-4) 5px,var(--rainbow-5) 5.5px,var(--rainbow-6) 6px,
+      transparent 6px,transparent 7px),
+    /* asphalt */
+    linear-gradient(0deg,#3a3a45 0px,#3a3a45 16px,#2a2a32 16px,#2a2a32 18px,transparent 18px),
+    /* center dashed line */
+    repeating-linear-gradient(90deg,transparent 0px,transparent 24px,#ffcc02 24px,#ffcc02 32px),
+    /* side line */
+    repeating-linear-gradient(90deg,transparent 0px,transparent 18px,#ffffff 18px,#ffffff 22px,transparent 22px,transparent 24px);
+  background-position:0 0,0 0,0 8px,0 15px;
+  background-size:100% 100%,100% 100%,auto 2px,auto 1.5px;
+  animation:roadScroll 0.55s linear infinite,rainbowPulse 1.8s ease-in-out infinite;
+  opacity:0.65;
+}
+@keyframes roadScroll{0%{background-position:0 0,0 0,-24px 8px,-24px 15px}100%{background-position:0 0,0 0,0 8px,0 15px}}
+@keyframes rainbowPulse{
+  0%,100%{filter:brightness(1) saturate(1)}
+  25%{filter:brightness(1.4) saturate(1.3)}
+  50%{filter:brightness(1) saturate(1.1)}
+  75%{filter:brightness(1.35) saturate(1.25)}
+}
+/* ── Shared car styles ── */
+.racer-car{
+  position:absolute;bottom:4px;z-index:2;
+  font-size:1.15rem;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  animation-timing-function:cubic-bezier(0.42,0,0.58,1);animation-iteration-count:infinite;
+}
+/* Exhaust puff for all cars */
+.racer-car::after{
+  content:'💨';position:absolute;right:-12px;top:-4px;
+  font-size:0.55rem;opacity:0.75;
+  animation:exhaustPuff 0.3s ease-out infinite;
+}
+@keyframes exhaustPuff{0%,100%{opacity:0.85;transform:scale(1)}50%{opacity:0.25;transform:scale(0.5)}}
+/* ── Car 1: F1 Racer (fastest) ── */
+.car-f1{
+  animation-name:carF1Drive;animation-duration:3.8s;animation-delay:0s;
+  filter:drop-shadow(0 0 8px rgba(255,80,50,0.7)) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  font-size:1.25rem;
+}
+@keyframes carF1Drive{
+  0%{left:-70px;transform:translateY(0)}
+  18%{transform:translateY(-3px)}
+  36%{transform:translateY(-1px)}
+  54%{transform:translateY(-3px)}
+  72%{transform:translateY(0)}
+  100%{left:calc(100% + 70px);transform:translateY(0)}
+}
+/* ── Car 2: Blue SUV (medium) ── */
+.car-suv{
+  animation-name:carSUVDrive;animation-duration:5.2s;animation-delay:1.2s;
+}
+@keyframes carSUVDrive{
+  0%{left:-70px;transform:translateY(0)}
+  12%{transform:translateY(-2px)}
+  28%{transform:translateY(-1px)}
+  44%{transform:translateY(-2px)}
+  60%{transform:translateY(0)}
+  100%{left:calc(100% + 70px);transform:translateY(0)}
+}
+/* ── Car 3: Red Car (medium-fast) ── */
+.car-red{
+  animation-name:carRedDrive;animation-duration:4.6s;animation-delay:2.8s;
+  filter:drop-shadow(0 0 6px rgba(255,60,40,0.6)) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+@keyframes carRedDrive{
+  0%{left:-70px;transform:translateY(0)}
+  15%{transform:translateY(-2px)}
+  35%{transform:translateY(-3px)}
+  55%{transform:translateY(-1px)}
+  75%{transform:translateY(-1px)}
+  100%{left:calc(100% + 70px);transform:translateY(0)}
+}
+/* ── Car 4: Police Car (slow, siren flash) ── */
+.car-cop{
+  animation-name:carCopDrive;animation-duration:7s;animation-delay:3.5s;
+  font-size:1.3rem;
+}
+.car-cop::before{
+  content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  width:8px;height:4px;border-radius:2px;
+  background:#ff3333;animation:sirenFlash 0.2s step-end infinite;
+}
+@keyframes sirenFlash{0%,100%{background:#ff3333}50%{background:#3333ff}}
+@keyframes carCopDrive{
+  0%{left:-70px;transform:translateY(0)}
+  10%{transform:translateY(-2px)}
+  25%{transform:translateY(0)}
+  40%{transform:translateY(-2px)}
+  55%{transform:translateY(-1px)}
+  70%{transform:translateY(0)}
+  100%{left:calc(100% + 70px);transform:translateY(0)}
+}
+/* ── NAME TAG: TAO LIU · 刘涛 (MapleStory bouncing nameplate) ── */
+.racer-name-tag{
+  position:absolute;bottom:4px;z-index:3;
+  animation:nameBounce 6.5s linear infinite;animation-delay:0.6s;
+}
+.name-tag-inner{
+  display:block;white-space:nowrap;
+  background:linear-gradient(180deg,#ffd54f 0%,#ffb300 100%);
+  color:#2d1810;font-family:var(--font-sans);
+  font-size:0.65rem;font-weight:800;letter-spacing:0.04em;
+  padding:2px 10px;border-radius:10px;
+  border:1.5px solid #e6a200;
+  box-shadow:
+    0 2px 0 #cc8800,
+    0 3px 8px rgba(255,180,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.4);
+  text-shadow:0 0 4px rgba(255,255,255,0.5);
+}
+/* Tag arrow/bobber */
+.racer-name-tag::after{
+  content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);
+  width:0;height:0;
+  border-left:5px solid transparent;
+  border-right:5px solid transparent;
+  border-top:5px solid #e6a200;
+}
+@keyframes nameBounce{
+  0%{left:-140px;transform:translateY(0) scale(1)}
+  4%{transform:translateY(-3px) scale(1.08)}
+  8%{transform:translateY(0) scale(0.95)}
+  12%{transform:translateY(-2px) scale(1.05)}
+  16%{transform:translateY(0) scale(1)}
+  20%{transform:translateY(-3px) scale(1.07)}
+  24%{transform:translateY(-1px) scale(0.98)}
+  28%{transform:translateY(-2px) scale(1.04)}
+  32%{transform:translateY(0) scale(1)}
+  36%{transform:translateY(-2px) scale(1.05)}
+  40%{transform:translateY(0) scale(0.97)}
+  44%{transform:translateY(-3px) scale(1.06)}
+  48%{transform:translateY(-1px) scale(1)}
+  52%{transform:translateY(-2px) scale(1.04)}
+  56%{transform:translateY(0) scale(0.98)}
+  100%{left:calc(100% + 140px);transform:translateY(0) scale(1)}
+}
+/* ── Decorations: stars & coins ── */
+.racer-deco{
+  position:absolute;z-index:1;pointer-events:none;
+  font-size:0.6rem;animation-timing-function:ease-in-out;animation-iteration-count:infinite;
+}
+.deco-star1{animation:starFloat 3s linear infinite;animation-delay:0s;bottom:12px;left:10%}
+.deco-star2{animation:starFloat 3.5s linear infinite;animation-delay:1.5s;bottom:10px;left:60%}
+.deco-coin{animation:coinBounce 4s ease-in-out infinite;animation-delay:0.8s;bottom:11px;left:35%}
+.deco-meso{animation:coinBounce 4.5s ease-in-out infinite;animation-delay:2.5s;bottom:13px;left:78%}
+@keyframes starFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:0.7}
+  25%{transform:translateY(-7px) rotate(90deg);opacity:1}
+  50%{transform:translateY(0) rotate(180deg);opacity:0.7}
+  75%{transform:translateY(-5px) rotate(270deg);opacity:0.9}
+}
+@keyframes coinBounce{
+  0%,100%{transform:translateY(0) scale(1);opacity:0.8}
+  15%{transform:translateY(-8px) scale(1.2);opacity:1}
+  30%{transform:translateY(0) scale(0.9);opacity:0.8}
+  50%{transform:translateY(-6px) scale(1.15);opacity:0.95}
+  65%{transform:translateY(0) scale(0.95);opacity:0.85}
+  80%{transform:translateY(-4px) scale(1.1);opacity:0.9}
+}
+/* ── Pause all on navbar hover ── */
+.navbar:hover .racer-car,
+.navbar:hover .racer-name-tag,
+.navbar:hover .racer-deco,
+.navbar:hover .racer-road{animation-play-state:paused}
+/* ── Light theme ── */
+[data-theme="light"] .racer-road{
+  --rainbow-1:#ff8787;--rainbow-2:#ffa94d;--rainbow-3:#ffe066;
+  --rainbow-4:#8ce99a;--rainbow-5:#74c0fc;--rainbow-6:#9775fa;
+  opacity:0.55;
+}
+[data-theme="light"] .racer-car{filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3))}
+[data-theme="light"] .car-f1{filter:drop-shadow(0 0 6px rgba(255,80,50,0.5)) drop-shadow(0 2px 3px rgba(0,0,0,0.3))}
+[data-theme="light"] .car-red{filter:drop-shadow(0 0 4px rgba(255,60,40,0.4)) drop-shadow(0 2px 3px rgba(0,0,0,0.3))}
+
+/* ═══════════════════════════════════════════════════════════════════════
    NAVIGATION
    ═══════════════════════════════════════════════════════════════════════ */
 .navbar{
@@ -473,11 +664,39 @@ section{padding:4.5rem 0}
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   FIREWORK CANVAS OVERLAY
+   ═══════════════════════════════════════════════════════════════════════ */
+#firework-canvas{
+  position:fixed;inset:0;z-index:9997;pointer-events:none;
+  opacity:0;transition:opacity 0.6s ease;
+}
+#firework-canvas.active{opacity:1}
+#firework-canvas.fade-out{opacity:0;transition:opacity 1.5s ease}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   3D EARTH OVERLAY — full-viewport canvas · transparent
+   ═══════════════════════════════════════════════════════════════════════ */
+.earth-overlay{
+  position:fixed;inset:0;z-index:9996;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;pointer-events:none;
+  opacity:0;transition:opacity 0.65s cubic-bezier(0.32,0.72,0,1);
+}
+.earth-overlay.active{opacity:1}
+.earth-container{
+  position:fixed;inset:0;
+  transform:scale(0.92);opacity:0;
+  transition:transform 0.7s cubic-bezier(0.32,0.72,0,1),opacity 0.5s ease;
+}
+.earth-overlay.active .earth-container{transform:scale(1);opacity:1}
+.earth-canvas{display:block;width:100%;height:100%}
+
+/* ═══════════════════════════════════════════════════════════════════════
    PRINT
    ═══════════════════════════════════════════════════════════════════════ */
 @media print{
   .navbar,.nav-toggle,.social-links,.footer,.back-to-top,.theme-toggle,.footer-dino,
-  .scroll-progress,.cursor-glow,#particle-canvas,#bouncing-balls-container,.gif-bg-layer{display:none!important}
+  .scroll-progress,.cursor-glow,#particle-canvas,#bouncing-balls-container,#firework-canvas,.gif-bg-layer{display:none!important}
   body{background:#fff;color:#000}
   .hero{min-height:auto;padding:1rem 0}
   section{padding:1rem 0;break-inside:avoid}
