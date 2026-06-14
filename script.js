@@ -339,14 +339,13 @@ function buildColumnGlobe(R){
   const up=new THREE.Vector3(0,1,0);
   const normal=new THREE.Vector3();
   const quat=new THREE.Quaternion();
-  const greens=[
-    new THREE.Color('#1a2e1a'), // deep forest
-    new THREE.Color('#0e4429'), // dark
-    new THREE.Color('#006d32'), // medium-dark
-    new THREE.Color('#26a641'), // medium
-    new THREE.Color('#39d353'), // bright
-    new THREE.Color('#7ce38b'), // highlight
-  ];
+  // Rainbow HSL → RGB helper
+  function hslToColor(h,s,l){
+    const a=s*Math.min(l,1-l);
+    const f=n=>(n+h/30)%12;
+    const k=n=>l-a*Math.max(Math.min(f(n)-3,9-f(n),1),-1);
+    return new THREE.Color(k(0),k(8),k(4));
+  }
 
   for(let i=0;i<COUNT;i++){
     const phi=Math.acos(1-2*(i+0.5)/COUNT);
@@ -360,10 +359,11 @@ function buildColumnGlobe(R){
     const n4=(Math.sin(x*12.7+z*11.9)*Math.cos(y*9.1)*0.5+0.5);
     let noise=Math.pow(n1*0.35+n2*0.25+n3*0.25+n4*0.15,1.5);
     const h=0.02+noise*0.24;
-    const t=Math.min(1,noise);
-    let col=greens[0];
-    if(t>0.08)col=greens[1];if(t>0.2)col=greens[2];if(t>0.4)col=greens[3];
-    if(t>0.62)col=greens[4];if(t>0.82)col=greens[5];
+    // Hue from angular position (rainbow wraps around the globe)
+    const hue=(theta%(Math.PI*2))/(Math.PI*2)*360; // 0–360°
+    const saturation=0.55+noise*0.45;               // taller = more saturated
+    const lightness=0.12+noise*0.42;                 // taller = brighter
+    const col=hslToColor(hue,saturation,lightness);
     normal.set(x,y,z).normalize();
     dummy.position.set(x*(R+h/2),y*(R+h/2),z*(R+h/2));
     quat.setFromUnitVectors(up,normal);
@@ -390,10 +390,10 @@ function buildColumnGlobe(R){
   );
   group.add(coreGlow);
 
-  // Inner glow layer
+  // Inner glow layer (white, lets rainbow columns pop)
   group.add(new THREE.Mesh(
     new THREE.SphereGeometry(R*0.45,32,32),
-    new THREE.MeshBasicMaterial({color:0xffd98c,transparent:true,opacity:0.18})
+    new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.15})
   ));
 
   // Outer atmospheric glow
@@ -401,7 +401,7 @@ function buildColumnGlobe(R){
   const atmoM=new THREE.ShaderMaterial({
     uniforms:{uTime:{value:0}},
     vertexShader:`varying vec3 vNormal;varying vec3 vPos;void main(){vNormal=normalize(normalMatrix*normal);vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-    fragmentShader:`varying vec3 vNormal;varying vec3 vPos;void main(){float rim=1.0-abs(dot(vNormal,vec3(0.0,0.0,1.0)));float glow=pow(rim,3.5)*0.35;gl_FragColor=vec4(0.36,0.78,0.55,glow);}`,
+    fragmentShader:`varying vec3 vNormal;varying vec3 vPos;void main(){float rim=1.0-abs(dot(vNormal,vec3(0.0,0.0,1.0)));float glow=pow(rim,3.5)*0.35;float hue=rim*0.3+uTime*0.08;vec3 rainbow=0.5+0.5*cos(6.28318*(hue+vec3(0.0,0.33,0.67)));gl_FragColor=vec4(rainbow,glow);}`,
     transparent:true,depthWrite:false,side:THREE.FrontSide
   });
   const atmoShell=new THREE.Mesh(atmoG,atmoM);atmoShell.name='atmoShell';
@@ -421,7 +421,7 @@ function buildColumnGlobe(R){
   }
   pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
   orbitParticles=new THREE.Points(pGeo,
-    new THREE.PointsMaterial({color:0x7ce38b,size:0.015,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false})
+    new THREE.PointsMaterial({color:0xffffff,size:0.015,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending,depthWrite:false})
   );
   group.add(orbitParticles);
 
