@@ -28,7 +28,7 @@ function getUrlParameter(name){
 // ── Docs list ──
 const docsList=[
   'vilasr.md','begin.md','fun.md','heart.md','thought.md',
-  'mind.md','pm.md','self.md','vacalith.md','pain.md','movie.md','head.md','amazing.md'
+  'mind.md','pm.md','self.md','vacalith.md','pain.md','movie.md','head.md','amazing.md','cool.md'
 ];
 const docFile=getUrlParameter('doc')||'vilasr.md';
 const currentIdx=docsList.indexOf(docFile);
@@ -47,7 +47,8 @@ const docTitles={
   'pain.md':'A painful story',
   'movie.md':'My favorite movie',
   'head.md':'Using my head',
-  'amazing.md':'amazing story'
+  'amazing.md':'amazing story',
+  'cool.md':'a draining storyline'
 };
 
 // ── Update Prev/Next button titles ──
