@@ -606,6 +606,10 @@ const imageSources=[
   './mark/docs/jpg/city.png','./mark/docs/jpg/painone.png','./mark/docs/jpg/杯子.jpg',
   './mark/docs/jpg/ball.jpg','./mark/docs/jpg/lanch.jpg','./mark/docs/jpg/face.jpg',
   './mark/docs/jpg/cha.jpg','./mark/docs/jpg/train.jpg','./mark/docs/jpg/ted.jpg',
+  './mark/docs/jpg/flower2.png','./mark/docs/jpg/blue_sky.png','./mark/docs/jpg/fly.jpg',
+  './mark/docs/jpg/bird_nest2.jpg','./mark/docs/jpg/bird_nest.jpg','./mark/docs/jpg/bird_nest3.jpg',
+  './mark/docs/jpg/cycle.jpg','./mark/docs/jpg/cat.jpg','./mark/docs/jpg/tiananmen.png',
+  './mark/docs/jpg/way.jpg','./mark/docs/jpg/map1.jpg',
 ];
 function initBubbles(){
   const container=document.getElementById('bouncing-balls-container');
