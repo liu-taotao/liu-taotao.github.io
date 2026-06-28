@@ -73,3 +73,8 @@
 </div>
 
 好好的努力，好好的学习，需要真的知道自己想要什么，什么是自己想要的，一定要维持本心，因为这一路真的好难走，你会碰到形形色色的人，又不知道是不是真的人，经历真的一个好老师，读懂生活，好好的向前，生活真的好难，我也不知道为什么焦虑，可能是“想的太多，做的太少”，好好经历，好好长大。
+
+<audio controls>
+  <source src="./docs/music/Isabelle Pierre - Le temps est bon.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>

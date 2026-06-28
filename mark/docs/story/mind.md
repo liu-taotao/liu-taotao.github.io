@@ -32,3 +32,8 @@
 总是有很多的东西没做，又总是有很多的东西要做，我觉得很多东西是一直需要持续的，比如学习，除了学习之外，我觉得跟要找到一个爱好，能够一直做下去，我更希望我的这个爱好能够更多的改变自己，希望改变自己的内心，能够使自己克服自己的短板，总是靠想象当然是不行的对吧😁
 
 看到很多的东西，我觉得需要做的就是好好的热爱生活，毕竟需要遇到的事情，慢慢的长大，慢慢感受。
+
+<audio controls>
+  <source src="./docs/music/mgk,Wiz Khalifa - girl next door.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
