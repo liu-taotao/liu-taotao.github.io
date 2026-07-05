@@ -515,7 +515,7 @@ section{padding:4.5rem 0}
    ═══════════════════════════════════════════════════════════════════════ */
 .articles-grid{
   display:flex;flex-direction:column;gap:0;
-  max-width:var(--max-width);margin:0 auto;
+  max-width:850px;margin:0 auto;
   background:var(--bg-ios-group);
   border:1px solid var(--border-card);
   border-radius:var(--radius-ios);

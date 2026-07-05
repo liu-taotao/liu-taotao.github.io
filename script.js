@@ -253,17 +253,25 @@ let earthActive=false,earthOverlay=null,earthRenderer=null,earthScene=null;
 let earthCamera=null,globeGroup=null,columnMesh=null,coreGlow=null,orbitParticles=null;
 let airplaneGroup=null,airplanePropeller=null,ribbonGroup=null,ribbonMesh=null,ribbonGeo=null;
 let earthRAF=null,earthAutoTimer=null,earthStartTime=0;
+let orbitAngle=0,shatterTriggered=false,lastSatPos=null;
+let meteorStartTime=0,meteorFragments=[],meteorTrails=null,meteorGlowLight=null;
+let sparkParticles=null,shockwaveRing=null,beamGroup=null,flashLight=null,meteorPhase=0;
+const ORBIT_RADIUS=2.5,ORBIT_TILT=0.5,ORBIT_SPEED=1.3;
 
 function showEarth(){
   if(earthActive||(typeof THREE==='undefined'))return;
   earthActive=true;earthStartTime=performance.now();
+  // Reset orbit & meteor state
+  orbitAngle=0;shatterTriggered=false;lastSatPos=null;meteorStartTime=0;
+  meteorFragments=[];meteorTrails=null;meteorGlowLight=null;
+  sparkParticles=null;shockwaveRing=null;beamGroup=null;flashLight=null;meteorPhase=0;
   earthOverlay=document.createElement('div');earthOverlay.className='earth-overlay';
   earthOverlay.innerHTML=`<div class="earth-container"><canvas class="earth-canvas" id="earth-canvas"></canvas></div>`;
   document.body.appendChild(earthOverlay);
   requestAnimationFrame(()=>{
     earthOverlay.classList.add('active');
     initEarthScene();
-    earthAutoTimer=setTimeout(()=>{dismissEarth()},6500);
+    earthAutoTimer=setTimeout(()=>{dismissEarth()},10000);
   });
 }
 
@@ -484,6 +492,9 @@ function initEarthScene(){
   function render(){
     if(!earthActive)return;
     const elapsed=(performance.now()-earthStartTime)*0.001;
+    const dt=Math.min(elapsed-(render._lastElapsed||elapsed),0.1);
+    render._lastElapsed=elapsed;
+
     // Globe spin
     globeGroup.rotation.y+=0.005;
     // Core glow pulse
@@ -494,52 +505,511 @@ function initEarthScene(){
     const atmoShell=globeGroup.children.find(c=>c.name==='atmoShell');
     if(atmoShell)atmoShell.material.uniforms.uTime.value=elapsed;
 
-    // ── Airplane: straight flight across full viewport ──
-    const flightStart=0.4,flightDur=3.2;
-    const tF=Math.max(0,Math.min(1,(elapsed-flightStart)/flightDur));
-    const te=tF<0.5?2*tF*tF:1-Math.pow(-2*tF+2,2)/2;
-    const viewW=7*earthCamera.aspect;
-    const ax=(te-0.5)*viewW;
-    const ay=1.45+Math.sin(te*Math.PI)*0.45;
-    airplaneGroup.position.set(ax,ay,-1.2);
-    // No banking — just slight pitch for "climbing" then "descending"
-    airplaneGroup.rotation.z=-0.05+Math.cos(te*Math.PI)*0.08;
-    if(airplanePropeller)airplanePropeller.rotation.z+=0.35;
+    // ── Phase timing ──
+    const orbitStart=0.4, orbitDuration=5.0; // one full orbit in 5s
+    const shatterTime=orbitStart+orbitDuration; // ~5.4s
+    const shatterDuration=2.0;
 
-    // ── Ribbon cape follows airplane tail ──
-    ribbonGroup.position.copy(airplaneGroup.position);
-    ribbonGroup.position.x-=0.8; // behind airplane tail
-    ribbonGroup.position.y-=0.15;
-    ribbonGroup.rotation.copy(airplaneGroup.rotation);
-    // Animate ribbon vertices — flowing wave, like Monkey King's cape
-    if(ribbonGeo){
-      const pos=ribbonGeo.attributes.position;
-      for(let i=0;i<pos.count;i++){
-        const x=pos.getX(i); // -L/2 to +L/2; +L/2 = attachment, -L/2 = free tip
-        const normX=(x+1.6)/3.2; // 0 at free tip, 1 at attachment
-        const distFromAttach=1-normX; // 1 at tip, 0 at attachment
-        const wave=Math.sin(x*7.5-elapsed*14)*0.09*Math.pow(distFromAttach,1.6);
-        const wave2=Math.cos(x*5.2-elapsed*10.5)*0.06*Math.pow(distFromAttach,1.3);
-        const wave3=Math.sin(x*3.8-elapsed*7.2)*0.04*distFromAttach;
-        pos.setZ(i,wave+wave2+wave3);
-        pos.setY(i,Math.sin(x*5.8-elapsed*11)*0.035*distFromAttach);
+    const orbitElapsed=Math.max(0,elapsed-orbitStart);
+    orbitAngle=orbitElapsed*ORBIT_SPEED; // continuous angle
+
+    // ── PHASE: Satellite Orbit ──
+    if(elapsed<shatterTime&&!shatterTriggered){
+      const ocx=0,ocy=-1.5,ocz=0;
+      const sx=ocx+ORBIT_RADIUS*Math.cos(orbitAngle);
+      const sy=ocy+ORBIT_RADIUS*Math.sin(orbitAngle)*Math.cos(ORBIT_TILT);
+      const sz=ocz+ORBIT_RADIUS*Math.sin(orbitAngle)*Math.sin(ORBIT_TILT);
+      airplaneGroup.position.set(sx,sy,sz);
+
+      // Satellite faces tangent (direction of motion)
+      const tx=-ORBIT_RADIUS*Math.sin(orbitAngle);
+      const ty=ORBIT_RADIUS*Math.cos(orbitAngle)*Math.cos(ORBIT_TILT);
+      const tz=ORBIT_RADIUS*Math.cos(orbitAngle)*Math.sin(ORBIT_TILT);
+      airplaneGroup.lookAt(sx+tx,sy+ty,sz+tz);
+      // Bank slightly into the turn
+      airplaneGroup.rotateZ(-0.3);
+
+      if(airplanePropeller)airplanePropeller.rotation.z+=0.35;
+
+      // Ribbon trails behind satellite (opposite to tangent)
+      ribbonGroup.position.set(sx-tx*0.12,sy-ty*0.12-0.15,sz-tz*0.12);
+      ribbonGroup.rotation.copy(airplaneGroup.rotation);
+      if(ribbonGeo){
+        const pos=ribbonGeo.attributes.position;
+        for(let i=0;i<pos.count;i++){
+          const x=pos.getX(i);
+          const normX=(x+1.6)/3.2;
+          const distFromAttach=1-normX;
+          const wave=Math.sin(x*7.5-elapsed*14)*0.09*Math.pow(distFromAttach,1.6);
+          const wave2=Math.cos(x*5.2-elapsed*10.5)*0.06*Math.pow(distFromAttach,1.3);
+          const wave3=Math.sin(x*3.8-elapsed*7.2)*0.04*distFromAttach;
+          pos.setZ(i,wave+wave2+wave3);
+          pos.setY(i,Math.sin(x*5.8-elapsed*11)*0.035*distFromAttach);
+        }
+        ribbonGeo.attributes.position.needsUpdate=true;
       }
-      ribbonGeo.attributes.position.needsUpdate=true;
+      // Store last position for shatter
+      lastSatPos={x:sx,y:sy,z:sz};
     }
 
-    // Fade out
-    const fadeS=4.8,fadeE=5.8;
+    // ── PHASE: Trigger Meteor Shatter ──
+    if(elapsed>=shatterTime&&!shatterTriggered){
+      shatterTriggered=true;
+      meteorStartTime=elapsed;
+      meteorPhase=0;
+      airplaneGroup.visible=false;
+      ribbonGroup.visible=false;
+      if(lastSatPos)initMeteorShatter(lastSatPos);
+      // Camera shake impulse
+      if(earthCamera)earthCamera.position.x+=(Math.random()-0.5)*0.15;
+    }
+
+    // ── PHASE: Meteor Animation ──
+    if(shatterTriggered){
+      const metElapsed=elapsed-meteorStartTime;
+      // Camera shake during initial burst
+      if(earthCamera&&metElapsed<0.6){
+        const shake=0.12*(1-metElapsed/0.6);
+        earthCamera.position.x+=(Math.random()-0.5)*shake;
+        earthCamera.position.y+=(Math.random()-0.5)*shake*0.7;
+      }else if(earthCamera&&metElapsed<0.7){
+        // settle camera
+        earthCamera.position.x+=(0-0.3-earthCamera.position.x)*0.1;
+      }
+      // Globe fades out during meteor stream
+      if(metElapsed>0.5&&globeGroup){
+        const globeFade=Math.max(0,1-(metElapsed-0.5)/1.2);
+        globeGroup.children.forEach(c=>{
+          if(c.material){
+            if(Array.isArray(c.material))c.material.forEach(m=>{m.transparent=true;m.opacity=globeFade});
+            else{c.material.transparent=true;c.material.opacity=globeFade}
+          }
+        });
+      }
+      updateMeteorShatter(dt,metElapsed);
+    }
+
+    // Fade out entire overlay
+    const fadeS=shatterTime+2.8,fadeE=fadeS+1.2;
     if(elapsed>fadeS)earthOverlay.style.opacity=1-Math.max(0,Math.min(1,(elapsed-fadeS)/(fadeE-fadeS)));
 
     earthRenderer.render(earthScene,earthCamera);
     earthRAF=requestAnimationFrame(render);
   }
+  render._lastElapsed=0;
   render();
+}
+
+// ── METEOR SHATTER SYSTEM (灵笼2-inspired: explosive breakup + streaming debris) ──
+const GLOBE_CENTER=new THREE.Vector3(0,-1.5,0);
+const GLOBE_RADIUS=1.0;
+const METEOR_COLORS=[0xfffbe6,0xfff3cd,0xffe066,0xffb833,0xff922b,0xff6b3a,0xff4d2e,0xe8590c,0xd9480f];
+
+function initMeteorShatter(originPos){
+  meteorFragments=[];meteorPhase=0;
+  const origin=new THREE.Vector3(originPos.x,originPos.y,originPos.z);
+
+  // ═══════════════════════════════════════════════════
+  // 1. FLASH LIGHT — blinding initial burst
+  // ═══════════════════════════════════════════════════
+  flashLight=new THREE.PointLight(0xffffff,25,8);
+  flashLight.position.copy(origin);
+  earthScene.add(flashLight);
+
+  // ═══════════════════════════════════════════════════
+  // 2. ENERGY BEAMS — radiating sword-light streaks (灵笼 style)
+  // ═══════════════════════════════════════════════════
+  beamGroup=new THREE.Group();
+  const beamCount=14;
+  for(let i=0;i<beamCount;i++){
+    const phi=Math.random()*Math.PI*2;
+    const theta=Math.random()*Math.PI;
+    const dir=new THREE.Vector3(
+      Math.sin(theta)*Math.cos(phi),
+      Math.sin(theta)*Math.sin(phi),
+      Math.cos(theta)
+    ).normalize();
+    const len=1.5+Math.random()*2.5;
+    const beamGeo=new THREE.CylinderGeometry(0.015,0.003,len,6,1);
+    const beamMat=new THREE.MeshBasicMaterial({
+      color:0xffffff,transparent:true,opacity:0.9
+    });
+    const beam=new THREE.Mesh(beamGeo,beamMat);
+    beam.position.copy(origin.clone().add(dir.clone().multiplyScalar(len/2)));
+    // Orient beam along direction
+    const up=new THREE.Vector3(0,1,0);
+    const quat=new THREE.Quaternion().setFromUnitVectors(up,dir);
+    beam.setRotationFromQuaternion(quat);
+    beam.userData={dir,life:0.15+Math.random()*0.3,origOpacity:0.9};
+    beamGroup.add(beam);
+  }
+  earthScene.add(beamGroup);
+
+  // ═══════════════════════════════════════════════════
+  // 3. DEBRIS CHUNKS — 80 fragments of varying sizes
+  // ═══════════════════════════════════════════════════
+  for(let i=0;i<80;i++){
+    const scatterDir=new THREE.Vector3(
+      (Math.random()-0.5)*2,(Math.random()-0.5)*2,(Math.random()-0.5)*2
+    ).normalize();
+    const toGlobe=new THREE.Vector3().copy(GLOBE_CENTER).sub(origin).normalize();
+    // Initial velocity: explosive outward + toward globe component
+    const vel=scatterDir.clone().multiplyScalar(3+Math.random()*8)
+      .add(toGlobe.clone().multiplyScalar(0.5+Math.random()*3));
+    const size=0.02+Math.random()*0.14;
+    // Mix of sphere and irregular-ish shapes
+    const geoType=Math.random();
+    let geo;
+    if(geoType<0.3)geo=new THREE.IcosahedronGeometry(size,0);
+    else if(geoType<0.6)geo=new THREE.OctahedronGeometry(size,0);
+    else geo=new THREE.SphereGeometry(size,5,3);
+    const mat=new THREE.MeshBasicMaterial({
+      color:METEOR_COLORS[Math.floor(Math.random()*METEOR_COLORS.length)],
+      transparent:true,opacity:1
+    });
+    const mesh=new THREE.Mesh(geo,mat);
+    mesh.position.copy(origin);
+    // Random initial rotation
+    mesh.rotation.set(Math.random()*Math.PI*2,Math.random()*Math.PI*2,Math.random()*Math.PI*2);
+    mesh.userData={rotSpeed:{x:(Math.random()-0.5)*12,y:(Math.random()-0.5)*12,z:(Math.random()-0.5)*12}};
+    earthScene.add(mesh);
+    // 30% of large fragments will split mid-flight
+    const willSplit=size>0.08&&Math.random()<0.35;
+    meteorFragments.push({mesh,vel,life:1.2+Math.random()*2.0,trail:[],size,willSplit,splitTime:0.3+Math.random()*0.7,hasSplit:false});
+  }
+
+  // ═══════════════════════════════════════════════════
+  // 4. SPARK PARTICLES — 300 tiny glowing points
+  // ═══════════════════════════════════════════════════
+  const sparkCount=300;
+  const sparkGeo=new THREE.BufferGeometry();
+  const sparkPos=new Float32Array(sparkCount*3);
+  const sparkCol=new Float32Array(sparkCount*3);
+  const sparkData=[];
+  for(let i=0;i<sparkCount;i++){
+    const dir=new THREE.Vector3((Math.random()-0.5)*2,(Math.random()-0.5)*2,(Math.random()-0.5)*2).normalize();
+    const speed=4+Math.random()*14;
+    sparkData.push({
+      pos:origin.clone(),
+      vel:dir.clone().multiplyScalar(speed),
+      life:0.3+Math.random()*1.5,
+      color:METEOR_COLORS[Math.floor(Math.random()*METEOR_COLORS.length)]
+    });
+    sparkPos[i*3]=origin.x;sparkPos[i*3+1]=origin.y;sparkPos[i*3+2]=origin.z;
+    const c=new THREE.Color(sparkData[i].color);
+    sparkCol[i*3]=c.r;sparkCol[i*3+1]=c.g;sparkCol[i*3+2]=c.b;
+  }
+  sparkGeo.setAttribute('position',new THREE.BufferAttribute(sparkPos,3));
+  sparkGeo.setAttribute('color',new THREE.BufferAttribute(sparkCol,3));
+  sparkParticles=new THREE.Points(sparkGeo,
+    new THREE.PointsMaterial({size:0.04,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.9})
+  );
+  sparkParticles.userData={data:sparkData};
+  earthScene.add(sparkParticles);
+
+  // ═══════════════════════════════════════════════════
+  // 5. SHOCKWAVE RING — expanding ring of particles
+  // ═══════════════════════════════════════════════════
+  const ringCount=180;
+  const ringGeo=new THREE.BufferGeometry();
+  const ringPos=new Float32Array(ringCount*3);
+  const ringCol=new Float32Array(ringCount*3);
+  for(let i=0;i<ringCount;i++){
+    const angle=(i/ringCount)*Math.PI*2;
+    const tiltAngle=(Math.random()-0.5)*0.6;
+    ringPos[i*3]=Math.cos(angle)*0.1;
+    ringPos[i*3+1]=Math.sin(angle)*Math.sin(tiltAngle)*0.1;
+    ringPos[i*3+2]=Math.sin(angle)*Math.cos(tiltAngle)*0.1;
+    ringCol[i*3]=1;ringCol[i*3+1]=0.9;ringCol[i*3+2]=0.7;
+  }
+  ringGeo.setAttribute('position',new THREE.BufferAttribute(ringPos,3));
+  ringGeo.setAttribute('color',new THREE.BufferAttribute(ringCol,3));
+  shockwaveRing=new THREE.Points(ringGeo,
+    new THREE.PointsMaterial({size:0.06,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.8})
+  );
+  shockwaveRing.position.copy(origin);
+  shockwaveRing.userData={radius:0.1,maxRadius:5,ringPos,ringCount};
+  earthScene.add(shockwaveRing);
+
+  // ═══════════════════════════════════════════════════
+  // 6. TRAIL POINTS — large pool for all debris trails
+  // ═══════════════════════════════════════════════════
+  const trailPool=80*16;
+  const trailGeo=new THREE.BufferGeometry();
+  const trailP=new Float32Array(trailPool*3);
+  const trailC=new Float32Array(trailPool*3);
+  trailGeo.setAttribute('position',new THREE.BufferAttribute(trailP,3));
+  trailGeo.setAttribute('color',new THREE.BufferAttribute(trailC,3));
+  meteorTrails=new THREE.Points(trailGeo,
+    new THREE.PointsMaterial({size:0.03,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0.8})
+  );
+  earthScene.add(meteorTrails);
+
+  // ═══════════════════════════════════════════════════
+  // 7. GLOW LIGHT — warm ambient glow following debris
+  // ═══════════════════════════════════════════════════
+  meteorGlowLight=new THREE.PointLight(0xff8830,6,6);
+  meteorGlowLight.position.copy(origin);
+  earthScene.add(meteorGlowLight);
+}
+
+function spawnSecondaryFragments(parentFrag){
+  // A large fragment splits into 3-5 smaller ones
+  const count=3+Math.floor(Math.random()*3);
+  const pos=parentFrag.mesh.position.clone();
+  for(let i=0;i<count;i++){
+    const dir=new THREE.Vector3((Math.random()-0.5)*2,(Math.random()-0.5)*2,(Math.random()-0.5)*2).normalize();
+    const speed=1+Math.random()*5;
+    const size=parentFrag.size*0.25+Math.random()*parentFrag.size*0.3;
+    const geo=new THREE.SphereGeometry(size,4,3);
+    const mat=new THREE.MeshBasicMaterial({
+      color:METEOR_COLORS[Math.floor(Math.random()*METEOR_COLORS.length)],
+      transparent:true,opacity:1
+    });
+    const mesh=new THREE.Mesh(geo,mat);
+    mesh.position.copy(pos);
+    mesh.userData={rotSpeed:{x:(Math.random()-0.5)*15,y:(Math.random()-0.5)*15,z:(Math.random()-0.5)*15}};
+    earthScene.add(mesh);
+    meteorFragments.push({
+      mesh,
+      vel:dir.clone().multiplyScalar(speed).add(parentFrag.vel.clone().multiplyScalar(0.4)),
+      life:0.5+Math.random()*1.0,
+      trail:[],
+      size,
+      willSplit:false,splitTime:0,hasSplit:true
+    });
+  }
+}
+
+function updateMeteorShatter(dt,metElapsed){
+  if(!dt||dt<=0)dt=0.016;
+
+  // ── Phase transitions ──
+  if(metElapsed<0.25)meteorPhase=0; // flash + beams
+  else if(metElapsed<2.5)meteorPhase=1; // debris stream
+  else meteorPhase=2; // final fade
+
+  // ═══════════════════════════════════════════════════
+  // FLASH LIGHT — decay rapidly
+  // ═══════════════════════════════════════════════════
+  if(flashLight){
+    const decay=Math.exp(-metElapsed*8);
+    flashLight.intensity=25*decay;
+    if(metElapsed>0.5||flashLight.intensity<0.3){
+      earthScene.remove(flashLight);flashLight=null;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // ENERGY BEAMS — fade and stretch outward
+  // ═══════════════════════════════════════════════════
+  if(beamGroup){
+    let anyAlive=false;
+    beamGroup.children.forEach(beam=>{
+      beam.userData.life-=dt;
+      if(beam.userData.life>0){
+        anyAlive=true;
+        beam.material.opacity=beam.userData.origOpacity*(beam.userData.life/0.45);
+        // Stretch beam outward
+        const scl=1+metElapsed*6;
+        beam.scale.set(1,scl,1);
+      }else{
+        beam.material.opacity=0;
+        beam.visible=false;
+      }
+    });
+    if(!anyAlive&&metElapsed>0.6){
+      beamGroup.children.forEach(b=>{b.geometry.dispose();b.material.dispose()});
+      earthScene.remove(beamGroup);beamGroup=null;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // SHOCKWAVE RING — expand outward
+  // ═══════════════════════════════════════════════════
+  if(shockwaveRing){
+    const ud=shockwaveRing.userData;
+    ud.radius+=dt*7;
+    const ringPos=ud.ringPos;
+    for(let i=0;i<ud.ringCount;i++){
+      const angle=(i/ud.ringCount)*Math.PI*2;
+      const tiltAngle=(Math.random()-0.5)*0.6;
+      ringPos[i*3]=Math.cos(angle)*ud.radius;
+      ringPos[i*3+1]=Math.sin(angle)*Math.sin(tiltAngle)*ud.radius;
+      ringPos[i*3+2]=Math.sin(angle)*Math.cos(tiltAngle)*ud.radius;
+    }
+    shockwaveRing.geometry.attributes.position.needsUpdate=true;
+    shockwaveRing.material.opacity=Math.max(0,0.8*(1-ud.radius/ud.maxRadius));
+    if(ud.radius>ud.maxRadius){
+      shockwaveRing.geometry.dispose();shockwaveRing.material.dispose();
+      earthScene.remove(shockwaveRing);shockwaveRing=null;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // SPARK PARTICLES
+  // ═══════════════════════════════════════════════════
+  if(sparkParticles){
+    const data=sparkParticles.userData.data;
+    const posArr=sparkParticles.geometry.attributes.position.array;
+    const colArr=sparkParticles.geometry.attributes.color.array;
+    let alive=0;
+    for(let i=0;i<data.length;i++){
+      const s=data[i];
+      s.life-=dt;
+      if(s.life<=0){posArr[i*3]=posArr[i*3+1]=posArr[i*3+2]=-999;continue}
+      alive++;
+      const toGlobe=new THREE.Vector3().copy(GLOBE_CENTER).sub(s.pos).normalize();
+      s.vel.add(toGlobe.clone().multiplyScalar(1.5*dt));
+      s.pos.x+=s.vel.x*dt;s.pos.y+=s.vel.y*dt;s.pos.z+=s.vel.z*dt;
+      posArr[i*3]=s.pos.x;posArr[i*3+1]=s.pos.y;posArr[i*3+2]=s.pos.z;
+      const lifeRatio=s.life/(0.3+1.5);
+      colArr[i*3]=1;colArr[i*3+1]=0.5*lifeRatio;colArr[i*3+2]=0.1*lifeRatio;
+    }
+    sparkParticles.geometry.attributes.position.needsUpdate=true;
+    sparkParticles.geometry.attributes.color.needsUpdate=true;
+    if(alive===0&&metElapsed>1.0){
+      sparkParticles.geometry.dispose();sparkParticles.material.dispose();
+      earthScene.remove(sparkParticles);sparkParticles=null;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // DEBRIS FRAGMENTS — main show
+  // ═══════════════════════════════════════════════════
+  for(let i=meteorFragments.length-1;i>=0;i--){
+    const frag=meteorFragments[i];
+    frag.life-=dt;
+    const toGlobe=new THREE.Vector3().copy(GLOBE_CENTER).sub(frag.mesh.position).normalize();
+    const dist=frag.mesh.position.distanceTo(GLOBE_CENTER);
+
+    // Gravity toward globe (stronger when closer)
+    const gravStr=3.5/(dist*dist+0.2);
+    frag.vel.add(toGlobe.clone().multiplyScalar(gravStr*dt));
+
+    // Slight drag in "atmosphere"
+    if(dist<GLOBE_RADIUS+1.5)frag.vel.multiplyScalar(0.992);
+    else frag.vel.multiplyScalar(0.998);
+
+    // Update position
+    frag.mesh.position.x+=frag.vel.x*dt;
+    frag.mesh.position.y+=frag.vel.y*dt;
+    frag.mesh.position.z+=frag.vel.z*dt;
+
+    // Spin
+    if(frag.mesh.userData.rotSpeed){
+      frag.mesh.rotation.x+=frag.mesh.userData.rotSpeed.x*dt;
+      frag.mesh.rotation.y+=frag.mesh.userData.rotSpeed.y*dt;
+      frag.mesh.rotation.z+=frag.mesh.userData.rotSpeed.z*dt;
+    }
+
+    // Trail
+    frag.trail.push(frag.mesh.position.clone());
+    if(frag.trail.length>16)frag.trail.shift();
+
+    // Secondary split
+    if(frag.willSplit&&!frag.hasSplit&&metElapsed>frag.splitTime){
+      spawnSecondaryFragments(frag);
+      frag.hasSplit=true;
+      // Fade out parent
+      frag.life=Math.min(frag.life,0.3);
+    }
+
+    // Heat glow based on speed and proximity
+    const newDist=frag.mesh.position.distanceTo(GLOBE_CENTER);
+    const speed=Math.sqrt(frag.vel.x*frag.vel.x+frag.vel.y*frag.vel.y+frag.vel.z*frag.vel.z);
+    const heat=Math.min(1,Math.max(0,(speed-1)/8)+Math.max(0,(2.5-newDist)/2));
+    // Color: white-hot → yellow → orange → red
+    const h=0.12-heat*0.11;
+    const s=1;
+    const l=0.45+heat*0.55;
+    frag.mesh.material.color.setHSL(h,s,l);
+
+    // Opacity from life
+    frag.mesh.material.opacity=Math.min(1,frag.life*2.5);
+
+    // Shrink when close to globe or near death
+    const nearGlobe=Math.max(0,GLOBE_RADIUS+0.2-newDist);
+    const shrink=Math.max(0.15,1-nearGlobe/0.8-frag.life*0.3);
+    frag.mesh.scale.setScalar(Math.min(1.5,shrink*1.2));
+
+    // Remove
+    if(newDist<GLOBE_RADIUS+0.06||frag.life<=0){
+      earthScene.remove(frag.mesh);
+      frag.mesh.geometry.dispose();
+      frag.mesh.material.dispose();
+      meteorFragments.splice(i,1);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════
+  // TRAIL POINTS — update from fragment trails
+  // ═══════════════════════════════════════════════════
+  if(meteorTrails&&meteorTrails.geometry){
+    const posArr=meteorTrails.geometry.attributes.position.array;
+    const colArr=meteorTrails.geometry.attributes.color.array;
+    const maxPts=posArr.length/3;
+    let idx=0;
+    for(const frag of meteorFragments){
+      for(let j=0;j<frag.trail.length&&idx<maxPts;j++){
+        const t=frag.trail[j];
+        const alpha=j/frag.trail.length;
+        posArr[idx*3]=t.x;posArr[idx*3+1]=t.y;posArr[idx*3+2]=t.z;
+        // Trail colors: white at head → orange → dark red at tail
+        colArr[idx*3]=1;
+        colArr[idx*3+1]=0.55*alpha;
+        colArr[idx*3+2]=0.08*alpha*alpha;
+        idx++;
+      }
+    }
+    // Clear remaining
+    for(let i=idx;i<maxPts;i++){
+      posArr[i*3]=posArr[i*3+1]=posArr[i*3+2]=-999;
+      colArr[i*3]=colArr[i*3+1]=colArr[i*3+2]=0;
+    }
+    meteorTrails.geometry.attributes.position.needsUpdate=true;
+    meteorTrails.geometry.attributes.color.needsUpdate=true;
+    // Fade trails in final phase
+    if(meteorPhase===2)meteorTrails.material.opacity=Math.max(0,0.8-(metElapsed-2.5)/1.2*0.8);
+  }
+
+  // ═══════════════════════════════════════════════════
+  // GLOW LIGHT — follow debris centroid
+  // ═══════════════════════════════════════════════════
+  if(meteorGlowLight){
+    if(meteorFragments.length>0){
+      let cx=0,cy=0,cz=0;
+      meteorFragments.forEach(f=>{cx+=f.mesh.position.x;cy+=f.mesh.position.y;cz+=f.mesh.position.z});
+      const n=meteorFragments.length;
+      meteorGlowLight.position.lerp(new THREE.Vector3(cx/n,cy/n,cz/n),0.3);
+      meteorGlowLight.intensity=3+meteorFragments.length*0.06;
+      meteorGlowLight.color.setHSL(0.1,1,0.4+meteorFragments.length*0.01);
+    }else{
+      meteorGlowLight.intensity*=0.88;
+      if(meteorGlowLight.intensity<0.2){
+        earthScene.remove(meteorGlowLight);meteorGlowLight=null;
+      }
+    }
+  }
 }
 
 function dismissEarth(){
   earthActive=false;clearTimeout(earthAutoTimer);
   if(earthRAF){cancelAnimationFrame(earthRAF);earthRAF=null}
+  // Clean up meteor fragments
+  if(meteorFragments.length>0){
+    meteorFragments.forEach(f=>{
+      if(f.mesh){if(f.mesh.parent)earthScene&&earthScene.remove(f.mesh);f.mesh.geometry&&f.mesh.geometry.dispose();f.mesh.material&&f.mesh.material.dispose()}
+    });
+    meteorFragments=[];
+  }
+  if(meteorTrails){if(earthScene)earthScene.remove(meteorTrails);meteorTrails.geometry&&meteorTrails.geometry.dispose();meteorTrails.material&&meteorTrails.material.dispose();meteorTrails=null}
+  if(meteorGlowLight){if(earthScene)earthScene.remove(meteorGlowLight);meteorGlowLight=null}
+  if(flashLight){if(earthScene)earthScene.remove(flashLight);flashLight=null}
+  if(sparkParticles){if(earthScene)earthScene.remove(sparkParticles);sparkParticles.geometry&&sparkParticles.geometry.dispose();sparkParticles.material&&sparkParticles.material.dispose();sparkParticles=null}
+  if(shockwaveRing){if(earthScene)earthScene.remove(shockwaveRing);shockwaveRing.geometry&&shockwaveRing.geometry.dispose();shockwaveRing.material&&shockwaveRing.material.dispose();shockwaveRing=null}
+  if(beamGroup){beamGroup.children.forEach(b=>{b.geometry&&b.geometry.dispose();b.material&&b.material.dispose()});if(earthScene)earthScene.remove(beamGroup);beamGroup=null}
+  shatterTriggered=false;orbitAngle=0;lastSatPos=null;meteorPhase=0;meteorStartTime=0;
   if(earthRenderer){earthRenderer.dispose();earthRenderer=null}
   if(earthScene){earthScene.clear();earthScene=null}
   globeGroup=null;columnMesh=null;coreGlow=null;orbitParticles=null;
