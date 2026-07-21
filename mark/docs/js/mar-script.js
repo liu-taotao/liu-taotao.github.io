@@ -266,10 +266,11 @@ const imageSources=[
   './docs/jpg/city.png','./docs/jpg/painone.png','./docs/jpg/杯子.jpg',
   './docs/jpg/ball.jpg','./docs/jpg/lanch.jpg','./docs/jpg/face.jpg',
   './docs/jpg/cha.jpg','./docs/jpg/train.jpg','./docs/jpg/ted.jpg',
-  './mark/docs/jpg/flower2.png','./mark/docs/jpg/blue_sky.png','./mark/docs/jpg/fly.jpg',
-  './mark/docs/jpg/bird_nest2.jpg','./mark/docs/jpg/bird_nest.jpg','./mark/docs/jpg/bird_nest3.jpg',
-  './mark/docs/jpg/cycle.jpg','./mark/docs/jpg/cat.jpg','./mark/docs/jpg/tiananmen.png',
-  './mark/docs/jpg/way.jpg','./mark/docs/jpg/map1.jpg',
+  './docs/jpg/flower2.png','./docs/jpg/blue_sky.png','./docs/jpg/fly.jpg',
+  './docs/jpg/bird_nest2.jpg','./docs/jpg/bird_nest.jpg','./docs/jpg/bird_nest3.jpg',
+  './docs/jpg/cycle.jpg','./docs/jpg/cat.jpg','./docs/jpg/tiananmen.png',
+  './docs/jpg/way.jpg','./docs/jpg/map1.jpg','./docs/jpg/bag.jpg',
+  './docs/jpg/lake.jpg','./docs/jpg/shanghai.jpg','./docs/jpg/supermarket.jpg',
 ];
 function initBubbles(){
   const container=document.getElementById('bouncing-balls-container');
