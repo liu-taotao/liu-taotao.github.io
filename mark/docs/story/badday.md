@@ -43,6 +43,28 @@
   <img src="./docs/jpg/shanghai.jpg" alt="shanghai" style="width: 658px; height: 493px;
        max-width: 100%; height: auto;" width="658" height="493">
 </div>
+有时候我也不知道怎么办，不好做决定。有时候考虑太多也许不太好，如果真是自己想做的，那就往前走吧。无论结果如何，我想这份勇气很重要。
+
+## 药好难喝
+
+生病真的是一家好难的事情，总是喝药，中药好苦。
+
+
+
+<div align="baijiahu2">
+  <img src="./docs/jpg/baijiahu2.jpg" alt="baijiahu2" style="width: 658px; height: 493px;
+       max-width: 100%; height: auto;" width="658" height="493">
+</div>
+
+<div align="banana">
+  <img src="./docs/jpg/banana.jpg" alt="banana" style="width: 658px; height: 493px;
+       max-width: 100%; height: auto;" width="658" height="493">
+</div>
+
+<div align="shagnhai3">
+  <img src="./docs/jpg/shanghai3.jpg" alt="shanghai3" style="width: 658px; height: 493px;
+       max-width: 100%; height: auto;" width="658" height="493">
+</div>
 
 <div align="road">
   <img src="./docs/jpg/road.jpg" alt="road" style="width: 658px; height: 493px;

@@ -1081,6 +1081,8 @@ const imageSources=[
   './mark/docs/jpg/cycle.jpg','./mark/docs/jpg/cat.jpg','./mark/docs/jpg/tiananmen.png',
   './mark/docs/jpg/way.jpg','./mark/docs/jpg/map1.jpg','./mark/docs/jpg/bag.jpg',
   './mark/docs/jpg/lake.jpg','./mark/docs/jpg/shanghai.jpg','./mark/docs/jpg/supermarket.jpg',
+  './mark/docs/jpg/shanghai2.jpg','./mark/docs/jpg/baijiahu2.jpg','./mark/docs/jpg/banana.jpg',
+  './mark/docs/jpg/shanghai3.jpg','./mark/docs/jpg/baijiahu1.jpg',
 ];
 function initBubbles(){
   const container=document.getElementById('bouncing-balls-container');
