@@ -49,24 +49,43 @@
 
 生病真的是一家好难的事情，总是喝药，中药好苦。
 
-
-
 <div align="baijiahu2">
   <img src="./docs/jpg/baijiahu2.jpg" alt="baijiahu2" style="width: 658px; height: 493px;
        max-width: 100%; height: auto;" width="658" height="493">
 </div>
+喝药真的难受。
+
+## 我也想有一个决定
+
+这个事情我想了好久，总是在这种处于焦虑的生活下，会出现掉头发，黑眼圈，我想调整，但是又不知道怎么调整，有时候真的好想换一份工作，但是一直没有勇气，也没想好后面该怎么走，内耗严重，不太行。或许换一份工作也是这样，或许不是这样，道路总是艰难的，静不下心，太担忧未来，做不好当下。
+
 
 <div align="banana">
   <img src="./docs/jpg/banana.jpg" alt="banana" style="width: 658px; height: 493px;
        max-width: 100%; height: auto;" width="658" height="493">
 </div>
+总是说年轻有无限的可能，我想年轻的时候敢想敢做，但是生活好像并不允许，我想做的东西并不是这个，感受是这样的，我到底该做什么样的人，该有什么样的生活，我也很迷茫，有一个健康的身体好像比什么都重要，但是有一个快乐的生活好像也很重要，既不能要这个有要那个，左右脑拉扯。
+
+## 规划是什么
+
+没有规划好像就是最好的规划，那位说要努力扎根，努力往前走。但是我不知道，路只能靠自己，前面没有路，后面没有门。有时候就好像船，有风就往前飘，没风只能靠荡。
+
 
 <div align="shagnhai3">
   <img src="./docs/jpg/shanghai3.jpg" alt="shanghai3" style="width: 658px; height: 493px;
        max-width: 100%; height: auto;" width="658" height="493">
 </div>
+或许改建立属于自己的港口，这个港口应该是什么样的呢，我想应该属于自己的内心，我想港口是坚强的，并不会总是遭受狂轰乱炸，上学时，丢的东西总能靠着自己努力拿回来，并不是为了证明什么，只是想说，亲手弄丢的东西，一定要亲手拿回来，这样的心气，现在好像没有了，总是在晃荡，也不是知道在晃荡什么，有一天是一天，很混乱。
+
 
 <div align="road">
   <img src="./docs/jpg/road.jpg" alt="road" style="width: 658px; height: 493px;
        max-width: 100%; height: auto;" width="658" height="493">
 </div>
+
+也许吧！经历的东西总是很痛苦，我也害怕走不出来，在医院床上躺着的时候，听到说，别想太多，该来的总会来，不该来的不会来。至少，我应该明确我想要的东西是什么，是什么呢，平平淡淡、健健康康？或许吧
+
+<audio controls>
+  <source src="./docs/music/Even仇依文 - Delete.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
