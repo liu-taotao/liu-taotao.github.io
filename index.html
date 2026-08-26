@@ -1,225 +1,156 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tao Liu 刘 涛 💡</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="home.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
-    <!-- GIF background (subtle texture) -->
+    <!-- Background layers (kept as-is) -->
     <div class="gif-bg-layer">
         <img src="./mark/docs/jpg/contact-CYwNOxWg.gif" alt="">
     </div>
-    <!-- Particle canvas background -->
     <canvas id="particle-canvas"></canvas>
-    <!-- Bouncing bubbles -->
     <div id="bouncing-balls-container"></div>
-    <!-- Cursor glow -->
     <div class="cursor-glow" id="cursor-glow"></div>
-    <!-- Scroll progress -->
     <div class="scroll-progress" id="scroll-progress"></div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <!-- 🏁 MapleStory-style racer track 🏁 -->
-        <div class="nav-racer-track">
-            <div class="racer-road"></div>
-            <div class="racer-car car-f1">🏎️</div>
-            <div class="racer-car car-suv">🚙</div>
-            <div class="racer-car car-red">🚗</div>
-            <div class="racer-car car-cop">🚓</div>
-            <div class="racer-name-tag" id="racer-name-tag">
-                <span class="name-tag-inner">TAO LIU · 刘涛</span>
-            </div>
-            <div class="racer-deco deco-star1">⭐</div>
-            <div class="racer-deco deco-star2">✨</div>
-            <div class="racer-deco deco-coin">🪙</div>
-            <div class="racer-deco deco-meso">💰</div>
+    <!-- Header -->
+    <header class="site-header" id="top">
+        <div class="site-title">
+            <h1><a href="#top">Tao Liu <span class="cn-name">刘 涛</span></a></h1>
+            <p class="site-subtitle">I hope my future will be filled with more happiness.</p>
         </div>
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">Tao Liu 刘 涛</a>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#home" class="nav-link">@This is me</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#Record" class="nav-link">@My time and life 🚤</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://github.com/liu-taotao" class="nav-link" title="GitHub" rel="noopener noreferrer" target="_blank">
-                        <i class='fab fa-github fa-fw'></i>
-                    </a>
-                </li>
-                <li class="nav-item">
+        <nav class="site-menu" aria-label="Primary">
+            <ul>
+                <li><a href="#thoughts">thoughts</a></li>
+                <li><a href="https://github.com/liu-taotao" target="_blank" rel="noopener noreferrer">github</a></li>
+                <li><a href="mailto:brainytao@gmail.com">email</a></li>
+                <li>
                     <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
                         <i class="fas fa-moon"></i>
                     </button>
                 </li>
             </ul>
-            <div class="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-image">
-                    <img src="./mark/docs/jpg/index.jpg" alt="Tao Liu" class="profile-img">
-                </div>
-                <div class="hero-text">
-                    <h1 class="hero-title">Tao Liu<span class="chinese-name"> 刘 涛</span></h1>
-                    <p class="hero-subtitle">I hope my future will be filled with more happiness.</p>
-                    <div class="hero-info">
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Fujian, China</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-briefcase"></i>
-                            <span>He's a few fries short of a Happy Meal</span>
-                        </div>
-                    </div>
-                    <div class="social-links">
-                        <a href="mailto:brainytao@gmail.com" class="social-link email" title="Email">
-                            <i class="fas fa-envelope"></i>
-                            <span>Email</span>
-                        </a>
-                        <a href="https://twitter.com/xxxxxxxxx" class="social-link twitter" title="Twitter" target="_blank">
-                            <i class="fab fa-twitter"></i>
-                            <span>Twitter</span>
-                        </a>
-                        <a href="https://github.com/liu-taotao" class="social-link github" title="Personal GitHub" target="_blank">
-                            <i class="fab fa-github"></i>
-                            <span>GitHub</span>
-                        </a>
-                        <a href="https://github.com/liu-taotao" class="social-link team" title="Team GitHub" target="_blank">
-                            <i class="fas fa-users"></i>
-                            <span>Team</span>
-                        </a>
-                        <a href="https://huggingface.co/xxxxxxxxx" class="social-link hf" title="Hugging Face" target="_blank">
-                            <i class="fas fa-robot"></i>
-                            <span>Hugging Face</span>
-                        </a>
-                        <a href="https://stackoverflow.com/users/xxxxxxxxx" class="social-link stackoverflow" title="Stack Overflow" target="_blank">
-                            <i class="fab fa-stack-overflow"></i>
-                            <span>Stack Overflow</span>
-                        </a>
-                    </div>
-                </div>
+    <!-- Main content -->
+    <main class="site-main" id="main">
+        <div class="site-content" id="content">
 
-                <!-- About Content -->
-                <div class="about-content">
-                    <p>
-                        Hi, I am employed at Contemporary Amperex Technology Co., Limited (CATL) (September 2024-present) as an Engineer, primarily responsible for database and AI-related work. I earned my Bachelor's degree from <strong>Jimei University</strong> (2020-2024) and joined the Intelligent Hardware & High-Performance Computing Lab in 2021, under the supervision of Prof. Xu.<br>
+            <!-- About -->
+            <section class="homepage-about" aria-label="About">
+                <img class="about-avatar" src="./mark/docs/jpg/index.jpg" alt="Tao Liu" />
+                <div class="about-body">
+                    <div class="about-meta">
+                        <span class="about-meta-item"><i class="fas fa-map-marker-alt"></i> Fujian, China</span>
+                        <span class="about-meta-item"><i class="fas fa-briefcase"></i> He's a few fries short of a Happy Meal</span>
+                    </div>
+                    <p class="about-bio">
+                        Hi, I am employed at Contemporary Amperex Technology Co., Limited (CATL) (September 2024-present) as an Engineer, primarily responsible for database and AI-related work. I earned my Bachelor's degree from <strong>Jimei University</strong> (2020-2024) and joined the Intelligent Hardware &amp; High-Performance Computing Lab in 2021, under the supervision of Prof. Xu.<br>
                         During my studies, I interned at several institutions, including:<br>
-                        Xiamen Milesight IoT Co., Ltd. - R&D Department (July-September 2023) as a Development Engineer (Intern)<br>
-                        Xiaomi Corporation - Mobile/Software Department (March-May 2024) as a Software R&D Engineer (Intern)
+                        Xiamen Milesight IoT Co., Ltd. - R&amp;D Department (July-September 2023) as a Development Engineer (Intern)<br>
+                        Xiaomi Corporation - Mobile/Software Department (March-May 2024) as a Software R&amp;D Engineer (Intern)
                     </p>
-
-                    <div class="internship-notice">
-                        <div class="notice-icon">🚀</div>
-                        <div class="notice-content">
+                    <div class="about-social">
+                        <a href="mailto:brainytao@gmail.com" class="about-social-link" title="Email"><i class="fas fa-envelope"></i><span>Email</span></a>
+                        <a href="https://twitter.com/xxxxxxxxx" class="about-social-link" title="Twitter" target="_blank" rel="noopener noreferrer"><i class="fab fa-twitter"></i><span>Twitter</span></a>
+                        <a href="https://github.com/liu-taotao" class="about-social-link" title="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i><span>GitHub</span></a>
+                        <a href="https://github.com/liu-taotao" class="about-social-link" title="Team" target="_blank" rel="noopener noreferrer"><i class="fas fa-users"></i><span>Team</span></a>
+                        <a href="https://huggingface.co/xxxxxxxxx" class="about-social-link" title="Hugging Face" target="_blank" rel="noopener noreferrer"><i class="fas fa-robot"></i><span>Hugging Face</span></a>
+                        <a href="https://stackoverflow.com/users/xxxxxxxxx" class="about-social-link" title="Stack Overflow" target="_blank" rel="noopener noreferrer"><i class="fab fa-stack-overflow"></i><span>Stack Overflow</span></a>
+                    </div>
+                    <div class="about-books">
+                        <span class="about-books-icon">🚀</span>
+                        <div class="about-books-body">
                             <h3>The books I'm reading recently</h3>
                             <p><strong>The Tencent Story<br>How to master project management</strong></p>
                         </div>
                     </div>
                 </div>
+            </section>
+
+            <!-- Experience -->
+            <section class="homepage-experience" aria-label="Experience">
+                <h2 class="homepage-section-heading">This is my life my experiences and my thought</h2>
+                <p class="homepage-note">* It might not be perfect or 'correct,' but it's authentically mine</p>
+                <ul class="experience-list">
+                    <li>
+                        <span class="exp-year">2020–2024</span>
+                        <div class="exp-body">
+                            <h3 class="exp-title">Jimei University — Electronic Information Engineering</h3>
+                            <p class="exp-desc">I didn't waste my time in university. (All my time in the laboratory and the library)</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="exp-year">2024–2026</span>
+                        <div class="exp-body">
+                            <h3 class="exp-title">Engineer at Contemporary Amperex Technology Co., Limited (CATL)</h3>
+                            <p class="exp-desc">Database, Computer Vision, and Large Model Applications</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="exp-year">2026–now</span>
+                        <div class="exp-body">
+                            <h3 class="exp-title">Engineer at Contemporary Amperex Technology Co., Limited (CATL)</h3>
+                            <p class="exp-desc">AI Data Center, Claude Code, and Energy solutions</p>
+                        </div>
+                    </li>
+                </ul>
+                <p class="homepage-note">* While life can be routine, it's important to discover the sparks of joy</p>
+            </section>
+
+            <div class="homepage-layout">
+
+                <!-- Featured posts -->
+                <section class="homepage-feed-top" id="thoughts" aria-label="Selected recent thoughts">
+                    <ul class="index-lists homepage-rows" id="featured-feed"></ul>
+                </section>
+
+                <!-- Remaining posts -->
+                <section class="homepage-feed-rest" aria-label="More thoughts">
+                    <ul class="index-lists homepage-rows" id="rest-feed"></ul>
+                </section>
+
+                <!-- Sidebar: Latest -->
+                <aside class="homepage-sidebar" aria-labelledby="latest-heading">
+                    <h2 id="latest-heading" class="homepage-section-heading">Latest</h2>
+                    <section>
+                        <h3><a href="#thoughts">Thoughts</a></h3>
+                        <ol id="sidebar-latest"></ol>
+                    </section>
+                </aside>
+
             </div>
         </div>
-    </section>
-
-    <!-- Awards / Timeline Section -->
-    <section id="Record" class="awards">
-        <div class="container">
-            <h2 class="section-title">This is my life my experiences and my thought</h2>
-            <p class="publications-note">* It might not be perfect or 'correct,' but it's authentically mine</p>
-            <div class="awards-list">
-                <div class="award-item scroll-animate">
-                    <div class="award-year">2020-2024</div>
-                    <div class="award-content">
-                        <h3>Jimei University - Electronic Information Engineering</h3>
-                        <p><a href="" target="_blank">I didn't waste my time in university.</a> (All my time in the laboratory and the library)</p>
-                    </div>
-                </div>
-                <div class="award-item scroll-animate">
-                    <div class="award-year">2024 - 2026</div>
-                    <div class="award-content">
-                        <h3>Engineer at Contemporary Amperex Technology Co., Limited (CATL)</h3>
-                        <p>Database, Computer Vision, and Large Model Applications</p>
-                    </div>
-                </div>
-                <div class="award-item scroll-animate">
-                    <div class="award-year">2026 - now</div>
-                    <div class="award-content">
-                        <h3>Engineer at Contemporary Amperex Technology Co., Limited (CATL)</h3>
-                        <p>AI Data Center, Claude code, and Energy solutions</p>
-                    </div>
-                </div>
-            </div>
-
-            <p class="publications-note"></p>
-            <p class="publications-note">* While life can be routine, it's important to discover the sparks of joy</p>
-
-            <!-- Articles Grid -->
-            <div class="articles-grid">
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">01</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=vilasr.md" target="_blank">The initial stage was filled with frustration and confusion</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2020 - 2021</div><div class="article-excerpt">All beginnings are like this.</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">02</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=vacalith.md" target="_blank">I'm stuck in the same daily loop. Where's the happiness?</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2022 - 2024</div><div class="article-excerpt">It's time to draw this chapter to a close</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">08</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=begin.md" target="_blank">Every story has to have a beginning</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2024 - 2025</div><div class="article-excerpt">A funny story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">03</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=thought.md" target="_blank">My thoughts have gradually changed</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2024 - 2025</div><div class="article-excerpt">Learning is a necessary part of life's journey</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">06</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=fun.md" target="_blank">I dream of happiness like this</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">This is what I picture for my future</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">09</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=head.md" target="_blank">Finally starting to use my head</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">A story that's not funny at all</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">10</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=heart.md" target="_blank">Thoughts evolve alongside life experiences</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">I like not being too anxious</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">07</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=pm.md" target="_blank">I've become curious about project management</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - 2025</div><div class="article-excerpt">I've always been curious about what project management really is</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">04</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=self.md" target="_blank">The time has come for me to finally introduce myself</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">After some thought, I'd still like to do a self-introduction</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">05</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=mind.md" target="_blank">What is the true story, after all?</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025 - Now</div><div class="article-excerpt">My little story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">11</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=movie.md" target="_blank">My favorite movie</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2025-12-08</div><div class="article-excerpt">My favorite movie</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">12</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=pain.md" target="_blank">a painful story</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-01-09</div><div class="article-excerpt">a painful story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">13</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=amazing.md" target="_blank">a totally crazy story</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-06-07</div><div class="article-excerpt">A truly incredible story</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">14</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=cool.md" target="_blank">a draining storyline</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-06-27</div><div class="article-excerpt">This has truly been an exhausting and extreme journey</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-            
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">15</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=badday.md" target="_blank">I'm always thinking—I've got so many dreams I want to make real</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-07-08</div><div class="article-excerpt">I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-                
-                <article class="publication-article scroll-animate" itemscope itemtype="http://schema.org/Article"><span class="article-num">16</span><div class="article-info"><h1 class="article-title" itemprop="name headline"><a href="mark/mar.html?doc=move.md" target="_blank">I'm always thinking—I've got so many dreams I want to make real</a></h1><div class="article-meta"><i class="fas fa-user-circle"></i> Tao Liu &middot; 2026-07-08</div><div class="article-excerpt">I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.</div></div><i class="fas fa-chevron-right article-chevron"></i></article>
-                
-            </div><!-- /articles-grid -->
-        </div>
-    </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2026 liu-taotao. All rights reserved.</p>
-                <div class="footer-dino" id="footer-dino" title="Rawr! 🦖">
-                    <img src="./mark/docs/jpg/image.png" alt="Dinosaur">
-                </div>
+    <footer class="site-footer" id="footer">
+        <div class="footer-grid">
+            <div class="footer-left">
+                <img id="footer-avatar" class="footer-avatar" alt="Tao Liu" width="80" height="80" src="./mark/docs/jpg/index.jpg" />
+                <ul>
+                    <li><a href="mailto:brainytao@gmail.com">brainytao@gmail.com</a></li>
+                    <li><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">CC-BY-NC-SA</a> license</li>
+                </ul>
+            </div>
+            <div class="footer-right">
+                <ul>
+                    <li><a href="https://github.com/liu-taotao" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                    <li><a href="https://twitter.com/xxxxxxxxx" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+                    <li><a href="https://huggingface.co/xxxxxxxxx" target="_blank" rel="noopener noreferrer">Hugging Face</a></li>
+                    <li><a href="https://stackoverflow.com/users/xxxxxxxxx" target="_blank" rel="noopener noreferrer">Stack Overflow</a></li>
+                </ul>
             </div>
         </div>
+        <p class="footer-copyright">&copy; 2026 liu-taotao. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>

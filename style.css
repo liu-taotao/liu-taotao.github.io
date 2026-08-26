@@ -44,7 +44,7 @@
   --transition-spring: 500ms cubic-bezier(0.34,1.56,0.64,1);
   --transition-ios: 280ms cubic-bezier(0.25,0.1,0.25,1);
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
 
   --navbar-height: 64px;
@@ -515,7 +515,7 @@ section{padding:4.5rem 0}
    ═══════════════════════════════════════════════════════════════════════ */
 .articles-grid{
   display:flex;flex-direction:column;gap:0;
-  max-width:850px;margin:0 auto;
+  max-width:900px;margin:0 auto;
   background:var(--bg-ios-group);
   border:1px solid var(--border-card);
   border-radius:var(--radius-ios);
@@ -568,6 +568,27 @@ section{padding:4.5rem 0}
   transition:transform var(--transition-ios);
 }
 .publication-article:hover .article-chevron{transform:translateX(3px);color:var(--accent)}
+
+/* Article cover thumbnail — pulled from each markdown's first photo */
+.article-cover{
+  flex-shrink:0;
+  width:150px;
+  aspect-ratio:16/9;
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--bg-secondary);
+  border:1px solid var(--border-card);
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition-ios);
+}
+.article-cover img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  display:block;
+  transition:transform var(--transition-base);
+}
+.publication-article:hover .article-cover{box-shadow:0 6px 20px var(--accent-glow)}
+.publication-article:hover .article-cover img{transform:scale(1.06)}
 
 /* Hide old elements */
 .post-meta,.post-footer,.publication-article .content,.read-more,.article-divider{display:none}
@@ -633,6 +654,7 @@ section{padding:4.5rem 0}
   .article-num{width:36px;height:36px;font-size:0.8rem}
   .article-title{font-size:0.88rem}
   .article-excerpt{display:none}
+  .article-cover{width:110px}
 
   .award-item{grid-template-columns:1fr;gap:0.4rem}
   .award-year{width:fit-content}
@@ -656,6 +678,7 @@ section{padding:4.5rem 0}
   .publication-article{padding:0.9rem 1rem;gap:0.7rem}
   .article-num{width:32px;height:32px;font-size:0.72rem;border-radius:8px}
   .article-title{font-size:0.84rem}
+  .article-cover{width:88px}
   .awards-list{padding-left:22px}
   .award-item{padding:0.85rem}
   .award-item::before{left:-17px;width:7px;height:7px}
