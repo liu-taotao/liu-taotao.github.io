@@ -27,8 +27,8 @@ function getUrlParameter(name){
 
 // ── Docs list ──
 const docsList=[
-  'vilasr.md','begin.md','fun.md','heart.md','thought.md',
-  'mind.md','pm.md','self.md','vacalith.md','pain.md','movie.md','head.md','amazing.md','cool.md','badday.md', 'move.md'
+  'vilasr.md','vacalith.md','begin.md','thought.md','fun.md','head.md','movie.md','heart.md','pm.md','self.md',
+  'mind.md','pain.md','amazing.md','cool.md','badday.md', 'move.md'
 ];
 const docFile=getUrlParameter('doc')||'vilasr.md';
 const currentIdx=docsList.indexOf(docFile);
@@ -36,6 +36,7 @@ const currentIdx=docsList.indexOf(docFile);
 // ── Doc title mapping ──
 const docTitles={
   'vilasr.md':'The initial stage',
+  'vacalith.md':'Daily loop',
   'begin.md':'Every story has a beginning',
   'fun.md':'I dream of happiness',
   'heart.md':'Thoughts evolve',
@@ -43,7 +44,6 @@ const docTitles={
   'mind.md':'What is the true story',
   'pm.md':'Curious about PM',
   'self.md':'Introduce myself',
-  'vacalith.md':'Daily loop',
   'pain.md':'A painful story',
   'movie.md':'My favorite movie',
   'head.md':'Using my head',

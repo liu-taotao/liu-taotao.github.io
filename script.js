@@ -1194,23 +1194,24 @@ function toRootImgPath(src){
 const ARTICLES=[
   {num:'01', doc:'vilasr.md',  title:"The initial stage was filled with frustration and confusion", date:'2020–2021', excerpt:'All beginnings are like this.'},
   {num:'02', doc:'vacalith.md',title:"I'm stuck in the same daily loop. Where's the happiness?", date:'2022–2024', excerpt:"It's time to draw this chapter to a close"},
-  {num:'08', doc:'begin.md',   title:'Every story has to have a beginning', date:'2024–2025', excerpt:'A funny story'},
+  {num:'08', doc:'begin.md',   title:'Every story has to have a beginning', date:'2023–2024', excerpt:'A funny story'},
   {num:'03', doc:'thought.md', title:'My thoughts have gradually changed', date:'2024–2025', excerpt:"Learning is a necessary part of life's journey"},
-  {num:'06', doc:'fun.md',     title:'I dream of happiness like this', date:'2025–now', excerpt:'This is what I picture for my future'},
-  {num:'09', doc:'head.md',    title:'Finally starting to use my head', date:'2025–now', excerpt:"A story that's not funny at all"},
-  {num:'10', doc:'heart.md',   title:'Thoughts evolve alongside life experiences', date:'2025–now', excerpt:'I like not being too anxious'},
-  {num:'07', doc:'pm.md',      title:"I've become curious about project management", date:'2025', excerpt:"I've always been curious about what project management really is"},
-  {num:'04', doc:'self.md',    title:'The time has come for me to finally introduce myself', date:'2025–now', excerpt:"After some thought, I'd still like to do a self-introduction"},
-  {num:'05', doc:'mind.md',    title:'What is the true story, after all?', date:'2025–now', excerpt:'My little story'},
-  {num:'11', doc:'movie.md',   title:'My favorite movie', date:'8 Dec 25', excerpt:'My favorite movie'},
-  {num:'16', doc:'move.md',    title:"The most important thing right now", date:'26 08 26', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'},
-  {num:'12', doc:'pain.md',    title:'a painful story', date:'9 Jan 26', excerpt:'a painful story'},
-  {num:'13', doc:'amazing.md', title:'a totally crazy story', date:'7 Jun 26', excerpt:'A truly incredible story'},
-  {num:'14', doc:'cool.md',    title:'a draining storyline', date:'27 Jun 26', excerpt:'This has truly been an exhausting and extreme journey'},
-  {num:'15', doc:'badday.md',  title:"I'm always thinking—I've got so many dreams I want to make real", date:'8 Jul 26', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'}
+  {num:'06', doc:'fun.md',     title:'I dream of happiness like this', date:'2025–09-27', excerpt:'This is what I picture for my future'},
+  {num:'09', doc:'head.md',    title:'Finally starting to use my head', date:'2025–10-13', excerpt:"A story that's not funny at all"},
+  {num:'10', doc:'heart.md',   title:'Thoughts evolve alongside life experiences', date:'2025–12-09', excerpt:'I like not being too anxious'},
+  {num:'07', doc:'pm.md',      title:"I've become curious about project management", date:'2025-12-23', excerpt:"I've always been curious about what project management really is"},
+  {num:'04', doc:'self.md',    title:'The time has come for me to finally introduce myself', date:'2025–12-31', excerpt:"After some thought, I'd still like to do a self-introduction"},
+  {num:'05', doc:'mind.md',    title:'What is the true story, after all?', date:'2026-01-15', excerpt:'My little story'},
+  {num:'11', doc:'movie.md',   title:'My favorite movie', date:'2025-12-08', excerpt:'My favorite movie'},
+  {num:'16', doc:'move.md',    title:"The most important thing right now", date:'2026-08-11', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'},
+  {num:'12', doc:'pain.md',    title:'a painful story', date:'2026-01-26', excerpt:'a painful story'},
+  {num:'13', doc:'amazing.md', title:'a totally crazy story', date:'2026-06-07', excerpt:'A truly incredible story'},
+  {num:'14', doc:'cool.md',    title:'a draining storyline', date:'2026-06-27', excerpt:'This has truly been an exhausting and extreme journey'},
+  {num:'15', doc:'badday.md',  title:"I'm always thinking—I've got so many dreams I want to make real", date:'2026-07-08', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'}
 ];
 const FEATURED_DOCS=['badday.md','cool.md','amazing.md','pain.md'];
-const LATEST_DOCS=['badday.md','move.md','cool.md','amazing.md','pain.md','movie.md','self.md','mind.md','heart.md','fun.md'];
+const LATEST_DOCS=['vilasr.md', 'vacalith.md', 'begin.md', 'thought.md','fun.md', 'head.md','movie.md', 'heart.md','pm.md',
+                  'self.md', 'mind.md','pain.md','amazing.md','cool.md','badday.md','move.md',];
 const articleByDoc=doc=>ARTICLES.find(a=>a.doc===doc);
 function docUrl(doc){return 'mark/mar.html?doc='+doc}
 

@@ -260,7 +260,7 @@
 .homepage-sidebar li {
   display: grid;
   column-gap: 0.8em;
-  grid-template-columns: 3.25em minmax(0, 1fr);
+  grid-template-columns: 3.75em minmax(0, 1fr);
   line-height: 130%;
   margin-bottom: 0.7em;
   position: relative;
