@@ -1207,11 +1207,12 @@ const ARTICLES=[
   {num:'12', doc:'pain.md',    title:'a painful story', date:'2026-01-26', excerpt:'a painful story'},
   {num:'13', doc:'amazing.md', title:'a totally crazy story', date:'2026-06-07', excerpt:'A truly incredible story'},
   {num:'14', doc:'cool.md',    title:'a draining storyline', date:'2026-06-27', excerpt:'This has truly been an exhausting and extreme journey'},
-  {num:'15', doc:'badday.md',  title:"I'm always thinking—I've got so many dreams I want to make real", date:'2026-07-08', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'}
+  {num:'15', doc:'badday.md',  title:"I'm always thinking—I've got so many dreams I want to make real", date:'2026-07-08', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'},
+  {num:'17', doc:'life.md',  title:"While the result is certainly important, the process is equally significant.", date:'2026-09-13', excerpt:' Never give up.'},
 ];
 const FEATURED_DOCS=['badday.md','cool.md','amazing.md','pain.md'];
 const LATEST_DOCS=['vilasr.md', 'vacalith.md', 'begin.md', 'thought.md','fun.md', 'head.md','movie.md', 'heart.md','pm.md',
-                  'self.md', 'mind.md','pain.md','amazing.md','cool.md','badday.md','move.md',];
+                  'self.md', 'mind.md','pain.md','amazing.md','cool.md','badday.md','move.md','life.md'];
 const articleByDoc=doc=>ARTICLES.find(a=>a.doc===doc);
 function docUrl(doc){return 'mark/mar.html?doc='+doc}
 
