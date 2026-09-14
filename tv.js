@@ -56,7 +56,13 @@ const TV_PHOTOS = [
   './mark/docs/jpg/way2.jpg',
   './mark/docs/jpg/杯子.jpg',
   './mark/docs/jpg/红鞋.jpg',
-  './mark/docs/jpg/茶杯头.webp'
+  './mark/docs/jpg/茶杯头.webp',
+  './mark/docs/jpg/me3.jpg',
+  './mark/docs/jpg/me5.jpg',
+  './mark/docs/jpg/qied.jpg',
+  './mark/docs/jpg/shubiao.jpg',
+  './mark/docs/jpg/sub6.jpg',
+  './mark/docs/jpg/sub8.webp'
 ];
 
 (function initTV(){
