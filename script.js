@@ -1086,7 +1086,8 @@ const imageSources=[
   './mark/docs/jpg/shanghai2.jpg','./mark/docs/jpg/baijiahu2.jpg','./mark/docs/jpg/banana.jpg',
   './mark/docs/jpg/shanghai3.jpg','./mark/docs/jpg/baijiahu1.jpg','./mark/docs/jpg/me3.jpg',
   './mark/docs/jpg/me5.jpg','./mark/docs/jpg/qied.jpg','./mark/docs/jpg/shubiao.jpg',
-  './mark/docs/jpg/sub6.jpg','./mark/docs/jpg/sub8.jpg',
+  './mark/docs/jpg/sub6.jpg','./mark/docs/jpg/sub8.jpg','./mark/docs/jpg/selfziji.jpg',
+  './mark/docs/jpg/selfziji1.jpg','./mark/docs/jpg/haibian.jpg','./mark/docs/jpg/haibian2.jpg',
 ];
 function initBubbles(){
   const container=document.getElementById('bouncing-balls-container');

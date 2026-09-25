@@ -62,7 +62,11 @@ const TV_PHOTOS = [
   './mark/docs/jpg/qied.jpg',
   './mark/docs/jpg/shubiao.jpg',
   './mark/docs/jpg/sub6.jpg',
-  './mark/docs/jpg/sub8.webp'
+  './mark/docs/jpg/sub8.webp',
+  './mark/docs/jpg/selfziji.jpg',
+  './mark/docs/jpg/selfziji1.jpg',
+  './mark/docs/jpg/haibian.jpg',
+  './mark/docs/jpg/haibian2.jpg',
 ];
 
 (function initTV(){
