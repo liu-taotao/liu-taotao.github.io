@@ -1212,7 +1212,7 @@ const ARTICLES=[
   {num:'14', doc:'cool.md',    title:'a draining storyline', date:'2026-06-27', excerpt:'This has truly been an exhausting and extreme journey'},
   {num:'15', doc:'badday.md',  title:"I'm always thinking—I've got so many dreams I want to make real", date:'2026-07-08', excerpt:'I keep circling back to the same question: how do I get there? Lately, it all feels more like a wish list than a plan.'},
   {num:'17', doc:'life.md',  title:"While the result is certainly important, the process is equally significant.", date:'2026-09-13', excerpt:' Never give up.'},
-  {num:'18', doc:'different.md',  title:"这是一个不一样的故事.", date:'2026-09-24', excerpt:'我想说的话真的很多，但是却溢于言表，很多东西，我觉得应该要说出来.'},
+  {num:'18', doc:'different.md',  title:"This is a unique story.", date:'2026-09-23', excerpt:'So many words linger in my mind, yet I struggle to put them into speech. But I believe these things ought to be said.'},
 ];
 const FEATURED_DOCS=['badday.md','cool.md','amazing.md','pain.md'];
 const LATEST_DOCS=['vilasr.md', 'vacalith.md', 'begin.md', 'thought.md','fun.md', 'head.md','movie.md', 'heart.md','pm.md',

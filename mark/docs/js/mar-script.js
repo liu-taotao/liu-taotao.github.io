@@ -52,7 +52,7 @@ const docTitles={
   'badday.md':'how do I get there?',
   'move.md':'how do I get there?',
   'life.md':'Never give up.',
-  'different.md':'不一样的故事.'
+  'different.md':'This is a unique story.'
 };
 
 // ── Update Prev/Next button titles ──
